@@ -1,0 +1,28 @@
+function [deltaP_feed] = feeding_losses(f, rho, L, D, m_dot)
+%feeding_losses This function returns the pressure drop due to feeding
+%lines.
+%
+% PROTOTYPE:
+%   [deltaP_feed] = feeding_losses(f, rho, L, D, m_dot)
+%
+% INPUT:
+%  f        Darcy friction factor
+%  rho      Propellant density [kg/m^3]
+%  L        Length of the feeding line [m]
+%  D        Diameter of the pipes in the feeding lines [m]
+%  m_dot    Propellant mass flow rate
+%
+% OUTPUT:
+%  t [ 1, N ]       Time vector of the simulation of length N [s]
+%  pressure_trace [ 1, N ] Pressure vector of the simulation of length N [bar]
+%  Rb [ 1, N ]      Burning rates vector of the simulation of length N [m/s]
+%
+% CONTRIBUTORS:
+%   Léonie DEU
+%
+% VERSIONS
+%   2022-05-05:     First version
+
+deltaP_feed = 8/pi^2*f*m_dot^2/rho*L/D^5;
+end
+
