@@ -2,15 +2,15 @@ function [R_inj] = injection_losses(rho, A_inj, C_d, N_inj)
 %INJECTION_LOSSES This function returns the coefficient that multiplies
 % the square of the mass flow rate in the expression of the pressure drop
 % due to injection plate.
-
+%
 % PROTOTYPE:
-%   [R_inj] = injection_losses(rho, A_inj, C_d)
+%   [R_inj] = injection_losses(rho, A_inj, C_d, N_inj)
 %
 % INPUT:
 %  rho          Propellant density [kg/m^3]
 %  A_inj        Area of one propellant injector [m^2]
 %  Cd           Discharge coefficient [-]
-%  N_inj        Number of injectors
+%  N_inj        Number of injectors [-]
 %
 % OUTPUT:
 %  R_inj        Resistance coefficient for propellant flow path
