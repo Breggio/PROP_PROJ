@@ -26,7 +26,6 @@ Cv = Cp - Ru; % Mayer's relation
 k = Cp/Cv; 
 
 v_exit = sqrt( 1-(Pe2Pc)^((k-1)/k) ) * sqrt( (2*k/(k-1)) * Ru*1e3/Mmol * T_cc); % m/s 
-A_t = T/(Pc*C_f2);
 
 % Chamber design
 A_t = T/(Pc*C_f2);
@@ -38,11 +37,10 @@ D_e_cm = 2*sqrt(A_e_cm/pi);
 m_prop = (T-Pe*A_e)/v_exit;
 m_ox = (OF/(1+OF)) * m_prop;
 m_fu = m_prop - m_ox;
-
 Mach_cc = 0.1; % assumed b/w 0.2 and 0.4
 A_cc_cm = (A_t/Mach_cc*((2/(k+1)) * (1+((k-1)/2*Mach_cc^2)))^((k+1)/(2*(k-1))))*10000;
 D_cc_cm = 2*sqrt(A_cc_cm/pi)
-L_star = 178 % [cm]
+L_star = 178; % [cm]
 V_cc = L_star*A_t_cm; % cm^3 
 L_cc = V_cc/A_cc_cm
 %% Conical nozzle
