@@ -64,7 +64,6 @@ xlabel('Time [s]')
 ylabel('Tank pressure [bar]')
 
 %% Adiabatic model
-
 %k = 1.4; % N2
 k = 1.66; % He
 
@@ -76,7 +75,6 @@ xlabel('Time [s]')
 ylabel('Tank pressure [bar]')
 
 %% Injection plate
-
 A_f = m_dot_f/(Cd*sqrt(2*delta_P_inj_in*rho_f)); % [m^2] Fuel total injection area
 A_inj_f = pi*d_inj^2/4; % [m^2] Area of 1 injector
 N_f = ceil(A_f/A_inj_f);
