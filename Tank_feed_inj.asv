@@ -85,17 +85,35 @@ gamma_ox = 30; % [deg] Oxidizer injector angle, ASSUMED
 gamma_f = asind(m_dot_ox/m_dot_f*u_ox/u_f*sind(gamma_ox)); % [deg] Oxidizer injector angle
 
 %% Iterative process
+k = 1.66; %He
 
-P_tank_new = P_tank_old.*( V_gas_old ./ (m_dot_old.*./rho_f.*9.81 + V_gas_in_f)).^k;
+m_dot_f(1) = m_dot_f;
+m_dot_ox(1) = m_dot_ox;
+P_tank_f(1) = Pt_in_f;
+P_tank_ox(1) = Pt_in_ox;
+V_gas_f(1) = V_gas_in_f;
+V_gas_ox(1) = V_gas_in_ox;
+c_star(1) = 1200; %DEVONO DARCELO DA CEA
+dt = 1; %[ms]
+
+for i = 2:dt:(tb*1000+1)
+
+    P_tank_f(i) = P_tank_f(i-1).*(V_gas_f(i-1) ./ (m_dot_f(i-1).*(dt/1000)./rho_f.*9.81 + V_gas_f(i-1))).^k;
+    P_tank_ox(i) = P_tank_ox(i-1).*(V_gas_ox(i-1) ./ (m_dot_ox(i-1).*(dt/1000)./rho_ox.*9.81 + V_gas_ox(i-1))).^k;
+    Pc(i) = m_dot(i-1)*c_star(1)/A_t;
+    [m_dot_f(i)] = P_to_m_dot(P_tank_f(i),Pc(i));
+    [m_dot_ox(i)] = P_to_m_dot(P_tank_ox(i),Pc(i));
+    m_dot(i) = m_dot_ox(i) + m_dot_f(i);
+    O_F(i) = m_dot_ox(i)/m_dot_f(i);
+
+end
+
+m_dot_new = m_dot_new_f + m_dot__new;
+c_star_new = sqrt((R*Tc/M_mol_new)/(k*(2/(k+1))^((k+1)/(k-1))));
 
 
 
-
-
-
-
-
-
+[=CEA('problem','hp','frozen','o/f',7.2,'case','CEAM-HP1','p,psia',290.08,'reactants','fuel','RP-1(L)','C',1,'H',1.9423,'wt%',100,'h,cal/mol',-5430,'t(k)',298.0,'oxid','H2O2(L)','H',2,'O',2,'wt%',100,'h,cal/mol',-3102,'t(k)',90.18,'output','transport','end','screen');
 
 
 
