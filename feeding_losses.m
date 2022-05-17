@@ -13,7 +13,8 @@ function [R_feed] = feeding_losses(f, rho, L, D)
 %  D            Diameter of the pipe in the feeding line [m]
 %
 % OUTPUT:
-%  R_feed       Pression drop coefficient [Pa/(kg^2/s^2)]
+%  R_feed       Resistance coefficient for propellant flow path
+%               [Pa/(kg^2/s^2)]
 %
 % CONTRIBUTORS:
 %   Léonie DEU
