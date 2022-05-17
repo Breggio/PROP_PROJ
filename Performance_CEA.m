@@ -55,4 +55,4 @@ lambda = (1+ cos(alpha))/2;
 T2D = lambda * T; % [N] Thrust considering the divergence loss 
 L_DIV = 0.5*(D_e_cm-D_t_cm)/tan(alpha);
 L_CON = 0.5*(D_cc_cm-D_t_cm)/tan(alpha);
-L_tot = L_CON + L_DIV;
+L_tot = L_CON + L_DIV; % [cm]
