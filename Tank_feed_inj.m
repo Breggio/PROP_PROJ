@@ -56,7 +56,7 @@ V_tank_ox = V_ox + V_gas_in_ox; % [m^3] Oxidizer tank
 %% Isothermic model
 
 time = [0:tb];
-P_t_f_iso = Pt_in_f.*( V_gas_in_f ./ (m_dot_f.*time./rho_f + V_gas_in_f));
+P_t_f_iso = Pt_in_f.*( V_gas_in_f ./ (m_dot_f.*time./rho_f.*9.81 + V_gas_in_f));
 
 figure(1)
 plot(time, P_t_f_iso./1e5, 'm', 'LineWidth', 2.5)
@@ -65,10 +65,10 @@ ylabel('Tank pressure [bar]')
 
 %% Adiabatic model
 
-k = 1.4; % N2
-%k = 1.66; % He
+%k = 1.4; % N2
+k = 1.66; % He
 
-P_t_f_ad = Pt_in_f.*( V_gas_in_f ./ (m_dot_f.*time./rho_f + V_gas_in_f)).^k;
+P_t_f_ad = Pt_in_f.*( V_gas_in_f ./ (m_dot_f.*time./rho_f.*9.81 + V_gas_in_f)).^k;
 
 figure(2)
 plot(time, P_t_f_ad./1e5, 'm', 'LineWidth', 2.5)
