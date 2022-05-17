@@ -10,7 +10,7 @@ set(groot,'defaultLegendInterpreter','latex');
 
 O_F = 6; % O/F ratio - from previous computations
 
-m_dot = 0.0312; % [kg/s] Propellants mass flow ratio
+m_dot = 0.0312; % [kg/s] Propellant mass flow rate
 m_dot_ox = (O_F/(1 + O_F))*m_dot; % [kg/s] Oxidizer mass flow rate
 m_dot_f = m_dot - m_dot_ox; % [kg/s] Fuel mass flow rate
 
@@ -95,4 +95,8 @@ u_f = Cd*sqrt(2*deltaP_inj_in/rho_f); % [m/s] Fuel discharge velocity
 gamma_ox = 30; % [deg] Oxidizer injector angle, ASSUMED
 gamma_f = asind(m_dot_ox/m_dot_f*u_ox/u_f*sind(gamma_ox)); % [deg] Oxidizer injector angle
 
+%% Performance analysis
+g_0 = 9.81; % [m^2/s] Gravitational field at sea level
+% T = m_dot*v_e + (P_e-P_a)*A_e
 
+% I_s = T/(m_dot*g_0)
