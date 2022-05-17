@@ -1,7 +1,25 @@
 function [R_valves] = valves_losses(rho)
-%VALVES_LOSSES Summary of this function goes here
-%   Detailed explanation goes here
-rho_H2O = 1000; % [kg/m^3]
+%VALVES_LOSSES This function returns the coefficient that multiplies
+% the square of the mass flow rate in the expression of the pressure drop
+% due to the valves.
+%
+% PROTOTYPE:
+%   [R_valves] = valves_losses(rho)
+%
+% INPUT:
+%  rho          Propellant density [kg/m^3]
+%
+% OUTPUT:
+%  R_valves     Resistance coefficient for propellant flow path
+%               [Pa/(kg^2/s^2)]
+%
+% CONTRIBUTORS:
+%   Léonie DEU
+%
+% VERSIONS
+%   2022-05-17:     First version
+
+rho_H2O = 1000; % water density [kg/m^3]
 
 C_v_open = 13; % flow coefficient for open-close valve
 C_v_check = 1.5; % flow coefficient for check valve
