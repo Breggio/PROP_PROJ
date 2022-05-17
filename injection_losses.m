@@ -13,7 +13,8 @@ function [R_inj] = injection_losses(rho, A_inj, C_d, N_inj)
 %  N_inj        Number of injectors
 %
 % OUTPUT:
-%  R_inj        Pression drop coefficient [Pa/(kg^2/s^2)]
+%  R_inj        Resistance coefficient for propellant flow path
+%               [Pa/(kg^2/s^2)]
 %
 % CONTRIBUTORS:
 %   Léonie DEU
