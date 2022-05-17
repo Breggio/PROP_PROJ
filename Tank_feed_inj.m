@@ -19,6 +19,8 @@ Pc_in = 20*1e5; % [Pa] Initial combustion chamber pressure
 rho_f = 810; % [kg/m^3] fuel density
 rho_ox = 1373; % [kg/m^3] oxidizer density
 
+deltaP_check = 10*6894.76; % [Pa] Pressure loss due to check valve
+deltaP_openclose = 15*6894.76; % [Pa] Pressure loss due to open-close valve
 deltaP_valve = deltaP_check + deltaP_openclose; % Pressure loss due to open-close valve and check valve
 deltaP_feed = 0.5*101325; % [Pa] Pressure loss of the feeding line
 u = 10; % [m/s] Velocity of the propellant in the feeding lines
@@ -56,12 +58,22 @@ V_tank_ox = V_ox + V_gas_in_ox; % [m^3] Oxidizer tank
 time = [0:tb];
 P_t_f_iso = Pt_in_f.*( V_gas_in_f ./ (m_dot_f.*time./rho_f + V_gas_in_f));
 
+figure(1)
+plot(time, P_t_f_iso./1e5, 'm', 'LineWidth', 2.5)
+xlabel('Time [s]')
+ylabel('Tank pressure [bar]')
+
 %% Adiabatic model
 
 k = 1.4; % N2
 %k = 1.66; % He
 
 P_t_f_ad = Pt_in_f.*( V_gas_in_f ./ (m_dot_f.*time./rho_f + V_gas_in_f)).^k;
+
+figure(2)
+plot(time, P_t_f_ad./1e5, 'm', 'LineWidth', 2.5)
+xlabel('Time [s]')
+ylabel('Tank pressure [bar]')
 
 %% Injection plate
 
