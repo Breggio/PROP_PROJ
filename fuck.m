@@ -1,1 +1,3 @@
 %quellochevuoi
+
+y=10;
