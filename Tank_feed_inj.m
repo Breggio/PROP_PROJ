@@ -84,7 +84,9 @@ u_f = Cd*sqrt(2*deltaP_inj_in/rho_f); % [m/s] Fuel discharge velocity
 gamma_ox = 30; % [deg] Oxidizer injector angle, ASSUMED
 gamma_f = asind(m_dot_ox/m_dot_f*u_ox/u_f*sind(gamma_ox)); % [deg] Oxidizer injector angle
 
+%% Iterative process
 
+P_tank_new = P_tank_old.*(V_gas_old ./ (m_dot_old.*dt./rho.*9.81 + V_gas_old)).^k;
 
 
 
