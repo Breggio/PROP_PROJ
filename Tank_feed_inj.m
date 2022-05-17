@@ -93,14 +93,21 @@ P_tank_f(1) = Pt_in_f;
 P_tank_ox(1) = Pt_in_ox;
 V_gas_f(1) = V_gas_in_f;
 V_gas_ox(1) = V_gas_in_ox;
-c_star(1) = 1200; %DEVONO DARCELO DA CEA
+c_star(1) = 1579; %DEVONO DARCELO DA CEA
 dt = 1; %[ms]
 
 for i = 2:dt:(tb*1000+1)
 
     P_tank_f(i) = P_tank_f(i-1).*(V_gas_f(i-1) ./ (m_dot_f(i-1).*(dt/1000)./rho_f.*9.81 + V_gas_f(i-1))).^k;
     P_tank_ox(i) = P_tank_ox(i-1).*(V_gas_ox(i-1) ./ (m_dot_ox(i-1).*(dt/1000)./rho_ox.*9.81 + V_gas_ox(i-1))).^k;
+    [outputs] = CEA('problem','rocket','frozen','o/f',7.2,'case','CEAM-rocket1',...
+    'p,bar',20,'supsonic(ae/at)',80,'reactants','fuel','RP-1(L)','C',1,...
+    'H',1.95000,'wt%',100,'t(k)',298.0,'oxid','H2O2(L)','wt%',87.5,...
+    't(k)',330,'oxid','H2O(L)','wt%',12.5,'t(k)',330,...
+    'output','thermochemical','end','screen');
+    c_star = outputs.output.froz.cstar(1)
     Pc(i) = m_dot(i-1)*c_star(1)/A_t;
+    [m_dot] = mass_flow_rate(P_gt, P_c, R_feed, R_dyn, R_inj, R_valve)
     [m_dot_f(i)] = P_to_m_dot(P_tank_f(i),Pc(i));
     [m_dot_ox(i)] = P_to_m_dot(P_tank_ox(i),Pc(i));
     m_dot(i) = m_dot_ox(i) + m_dot_f(i);
@@ -114,13 +121,7 @@ c_star_new = sqrt((R*Tc/M_mol_new)/(k*(2/(k+1))^((k+1)/(k-1))));
 
  
 
-[outputs] = CEA('problem','rocket','frozen','o/f',7.2,'case','CEAM-rocket1',...
-    'p,bar',20,'supsonic(ae/at)',80,'reactants','fuel','RP-1(L)','C',1,...
-    'H',1.95000,'wt%',100,'t(k)',298.0,'oxid','H2O2(L)','wt%',87.5,...
-    't(k)',330,'oxid','H2O(L)','wt%',12.5,'t(k)',330,...
-    'output','thermochemical','end','screen');
 
-% c_star = .output.froz.cp(1)
 
 
 [T,m_mol,c_p,Isp,c_star] = CEA('problem','hp','frozen','o/f',7.2,'case','CEAM-HP1','p,psia',290.08,'reactants','fuel','RP-1(L)','wt%',100,'t(k)',298.0,'oxid','H2O2(L)','wt%',87.5,'t(k)',330,'oxid','H2O(L)','wt%',12.5,'t(k)',330,'output','thermochemical','end','screen');
