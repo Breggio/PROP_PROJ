@@ -6,7 +6,7 @@ function [deltaP_feed] = feeding_losses(f, rho, L, D, m_dot)
 %   [deltaP_feed] = feeding_losses(f, rho, L, D, m_dot)
 %
 % INPUT:
-%  f            Darcy friction factor []
+%  f            Darcy friction factor [-]
 %  rho          Propellant density [kg/m^3]
 %  L            Length of the feeding line [m]
 %  D            Diameter of the pipe in the feeding line [m]
