@@ -126,8 +126,8 @@ for i = 2:dt:(tb*1000+1)
     P_c(i) = m_dot_tot(i-1)*c_star(i)/A_t;
     [R_valves_f(i)] = valves_losses(rho_f);
     [R_valves_ox(i)] = valves_losses(rho_f);
-    [R_inj_f(i)] = injection_losses(rho_f, A_inj_f, Cd, N_f);
-    [R_inj_ox(i)] = injection_losses(rho_ox, A_inj_ox, Cd, N_ox);
+    [R_inj_f(i)] = injection_losses(rho_f, A_inj_f, Cd);
+    [R_inj_ox(i)] = injection_losses(rho_ox, A_inj_ox, Cd);
     [R_feed_f(i)] = feeding_losses(f, rho_f, L, d_pipe);
     [R_feed_ox(i)] = feeding_losses(f, rho_ox, L, d_pipe);
     [R_dyn_f(i)] = dynamic_losses(rho_f, A_f);
@@ -143,5 +143,5 @@ for i = 2:dt:(tb*1000+1)
 end
 
 figure()
-plot([1:tb*1000+1], P_c, 'LineWidth', 2.5)
+plot([1:length(P_c)], P_c, 'LineWidth', 2.5)
 
