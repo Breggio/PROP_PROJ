@@ -1,1 +1,2 @@
 %sonouncoglione
+y = 10;
