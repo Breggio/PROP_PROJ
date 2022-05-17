@@ -1,0 +1,31 @@
+function [R_cooling] = cooling_losses(f_D, d_h, L, rho, A)
+%COOLING_LOSSES This function returns the coefficient that multiplies
+% the square of the mass flow rate in the expression of the pressure drop
+% due to regenerative cooling.
+%
+% PROTOTYPE:
+%   [R_cooling] = cooling_losses(f_D, d_h, L, rho, A)
+%
+% INPUT:
+%  f_D          
+%  d_h          Hydraulic diameter of the pipe [m]
+%               (for a pipe of circular section, this equals D;
+%       otherwise DH = 4A/P for a pipe of cross-sectional area A and perimeter P)          
+%  L
+%  rho          Propellant density [kg/m^3]
+%  A            Area of the pipe at the exit of the tank [m^2]
+%
+% OUTPUT:
+%  R_dyn        Pression drop coefficient [Pa/(kg^2/s^2)]
+%
+% CONTRIBUTORS:
+%   Léonie DEU
+%
+% VERSIONS
+%   2022-05-17:     First version
+
+R_cooling = 0.5*f_D/d_h*L/(rho*A^2);
+
+
+end
+
