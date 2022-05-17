@@ -111,7 +111,7 @@ end
 m_dot_new = m_dot_new_f + m_dot__new;
 c_star_new = sqrt((R*Tc/M_mol_new)/(k*(2/(k+1))^((k+1)/(k-1))));
 
-
+ 
 
 [T,m_mol,c_p,Isp,c_star] = CEA('problem','hp','frozen','o/f',7.2,'case','CEAM-HP1','p,psia',290.08,'reactants','fuel','RP-1(L)','wt%',100,'t(k)',298.0,'oxid','H2O2(L)','wt%',87.5,'t(k)',330,'oxid','H2O(L)','wt%',12.5,'t(k)',330,'output','thermochemical','end','screen');
 
