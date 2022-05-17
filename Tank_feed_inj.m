@@ -76,8 +76,13 @@ ylabel('Tank pressure [bar]')
 
 %% Injection plate
 A_f = m_dot_f/(Cd*sqrt(2*delta_P_inj_in*rho_f)); % [m^2] Fuel total injection area
-A_inj_f = pi*d_inj^2/4; % [m^2] Area of 1 injector
-N_f = ceil(A_f/A_inj_f);
+A_inj_f = pi*d_inj^2/4; % [m^2] Area of 1 fuel injector
+N_f = ceil(A_f/A_inj_f); % [-] Number of fuel orifices
+
+
+A_ox = m_dot_ox/((Cd*sqrt(2*deltaP_inj_in*rho_ox)); % [m^2] Oxidizer total injection area
+A_inj_ox = pi*d_inj^2/4; % [m^2] Area of 1 oxidizer injector
+N_ox = A_ox/A_inj_ox; % [-] Number of oxidizer orifices
 
 
 
