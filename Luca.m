@@ -1,2 +1,0 @@
-% luca is the best
-
