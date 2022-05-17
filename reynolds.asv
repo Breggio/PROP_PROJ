@@ -20,8 +20,4 @@ rho_fu = 810; %kg/m3
 mu_fu = 1.7e-3; %pa*s
 rho_ox = 1373; %kg/m3 
 mu_ox = 1.249e-3; %pa*s 
-v_fu = 0.2808;  %m/s
-v_ox = 0.9920;  %m/s
 
-Re_ox = (rho_ox * D_pipe * v_ox)/mu_ox
-Re_fu = (rho_fu * D_pipe * v_fu)/mu_fu
