@@ -17,7 +17,8 @@ function [R_cooling] = cooling_losses(f_D, d_h, L, rho, A)
 %  A            Cross-sectional wetted area [m^2]
 %
 % OUTPUT:
-%  R_cooling    Pression drop coefficient [Pa/(kg^2/s^2)]
+%  R_cooling    Resistance coefficient for propellant flow path
+%               [Pa/(kg^2/s^2)]
 %
 % CONTRIBUTORS:
 %   Léonie DEU
