@@ -30,10 +30,10 @@ k = Cp/Cv;
 v_exit = sqrt( 1-(Pe2Pc)^((k-1)/k) ) * sqrt( (2*k/(k-1)) * Ru*1e3/Mmol * T_cc); % m/s 
 
 %% Combustion Chamber design
-A_t = T/(Pc*C_f2);
-A_t_cm = A_t*1e4;
-D_t_cm = 2*sqrt(A_t_cm/pi);
-A_e = A_t*eps;
+A_t = T/(Pc*C_f2);                                                          %[m^2]
+A_t_cm = A_t*1e4;                                                           %[m^2]
+D_t_cm = 2*sqrt(A_t_cm/pi);                                                 %[m]
+A_e = A_t*eps;                                                              %[m^2]
 A_e_cm = A_e*1e4;
 D_e_cm = 2*sqrt(A_e_cm/pi);
 m_prop = (T-Pe*A_e)/v_exit;
