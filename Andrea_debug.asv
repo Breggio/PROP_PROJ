@@ -138,9 +138,10 @@ for i = 2:dt:(tb*1000+1)
 R_valves_f = 1e6;
 R_valves_ox = 4e6;
 f = @(x) R_valves_f.*x.^2 +x.*1579/A_t - P_tank_fuel(i);
-m_dot_fuel(i) = fsolve(f, m_dot_f, options)
-g = @(y) R_valves_ox.*y.^2 +y.*1579/A_t - P_tank_oxid(i);
-m_dot_oxid(i) = fsolve(g, m_dot_ox, options)
+m_dot_fuel(i) = fsolve(f, m_dot_f, options);
+m_dot_fuel
+g = @(y) R_valves_ox.*y.^2 +y.*1579/A_t - P_tank_fuel(i);
+m_dot_oxid(i) = fsolve(g, m_dot_ox, options);
     m_dot_tot(i) = m_dot_oxid(i) + m_dot_fuel(i);
     O_F(i) = m_dot_oxid(i)/m_dot_fuel(i);
     i
