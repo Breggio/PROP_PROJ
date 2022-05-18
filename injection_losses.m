@@ -4,12 +4,13 @@ function [R_inj] = injection_losses(rho, A_inj, C_d, N)
 % due to injection plate.
 %
 % PROTOTYPE:
-%   [R_inj] = injection_losses(rho, A_inj, C_d)
+%   [R_inj] = injection_losses(rho, A_inj, C_d, N)
 %
 % INPUT:
 %  rho          Propellant density [kg/m^3]
-%  A_inj        TOTAL propellant injectors orifice area [m^2]
+%  A_inj        Area of ONE propellant injector orifice [m^2]
 %  Cd           Discharge coefficient [-]
+%  N            Number of propellant injectors [-]
 %
 % OUTPUT:
 %  R_inj        Resistance coefficient for propellant flow path
