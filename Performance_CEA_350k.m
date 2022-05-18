@@ -2,6 +2,9 @@
 % Assumption: - Frozen condition across the whole system
 % - Storage Temperature Fuel: 298.15K 
 % - Storage Temperature Oxidizer: 350K shall be < 423K (boiling)
+clc
+clear all
+close all
 %% Section 1 - Nominal condition
 % Set data
 R = 8.314472; % [KJ/kmolK] or [J/molK]
