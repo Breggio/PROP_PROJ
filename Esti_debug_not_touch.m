@@ -10,9 +10,7 @@ set(groot,'defaultLegendInterpreter','latex');
 
 OF = 7.2; % O/F ratio - from previous computations
 
-m_dot = 0.0312; % [kg/s] Propellants mass flow ratio - from previous calculations
-
-m_dot = 0.0312; % [kg/s] Propellant mass flow rate
+m_dot = 0.0322; % [kg/s] Propellants mass flow ratio - from previous calculations
 
 m_dot_ox = (OF/(1 + OF))*m_dot; % [kg/s] Oxidizer mass flow rate
 m_dot_f = m_dot - m_dot_ox; % [kg/s] Fuel mass flow rate
@@ -25,7 +23,7 @@ rho_ox = 1373; % [kg/m^3] oxidizer density
 deltaP_check = 10*6894.76; % [Pa] Pressure loss due to check valve
 deltaP_openclose = 15*6894.76; % [Pa] Pressure loss due to open-close valve
 deltaP_valve = deltaP_check + deltaP_openclose; % Pressure loss due to open-close valve and check valve
-deltaP_feed = 0.5*101325; % [Pa] Pressure loss of the feeding line
+deltaP_feed = 0.05*101325; % [Pa] Pressure loss of the feeding line
 d_pipe = 0.005; % [m] Diameter of the pipes
 A_pipe = d_pipe^2*pi/4; % [m^2] Area of the pipes
 
@@ -38,8 +36,10 @@ deltaP_dyn_ox = 0.5*rho_ox*u_ox^2; % [Pa] Dynamic pressure loss in the feeding l
 deltaP_inj_in = 0.2*Pc_in; % Pressure loss due to injection (15-25% of Pc)
 
 % Initial pressure in fuel and oxidizer tanks
-Pt_in_f = Pc_in + deltaP_valve + deltaP_feed + deltaP_dyn_f + deltaP_inj_in;
-Pt_in_ox = Pc_in + deltaP_valve + deltaP_feed + deltaP_dyn_ox + deltaP_inj_in;
+Pt_in_f = Pc_in + 1000;
+%deltaP_valve + deltaP_feed + deltaP_dyn_f + deltaP_inj_in;
+Pt_in_ox = Pc_in + 1000;
+%deltaP_valve + deltaP_feed + deltaP_dyn_ox + deltaP_inj_in;
 
 B = 3; % Blow down ratio [3-4]
 
@@ -132,8 +132,8 @@ for i = 2:dt:(tb*1000+1)
 %     [R_feed_ox(i)] = feeding_losses(f, rho_ox, L, d_pipe);
 %     [R_dyn_f(i)] = dynamic_losses(rho_f, A_f)
 %     [R_dyn_ox(i)] = dynamic_losses(rho_ox, A_ox);
-    [m_dot_fuel(i)] = mass_flow_rate(P_tank_fuel(i), P_c(i),  R_valves_f(i)*4)
-    [m_dot_oxid(i)] = mass_flow_rate(P_tank_oxid(i), P_c(i), R_valves_ox(i)*4);
+    [m_dot_fuel(i)] = mass_flow_rate(P_tank_fuel(i), P_c(i),  (1000)/m_dot_f^2)
+    [m_dot_oxid(i)] = mass_flow_rate(P_tank_oxid(i), P_c(i), (1000)/m_dot_ox^2);
     m_dot_tot(i) = m_dot_oxid(i) + m_dot_fuel(i)
     O_F(i) = m_dot_oxid(i)/m_dot_fuel(i);
     i
