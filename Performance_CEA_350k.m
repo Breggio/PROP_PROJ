@@ -46,9 +46,9 @@ D_e_cm = 2*sqrt(A_e_cm/pi);
 Mach_cc = 0.1; % assumed b/w 0.2 and 0.4
 A_cc_cm = (A_t/Mach_cc*((2/(k+1)) * (1+((k-1)/2*Mach_cc^2)))^((k+1)/2/(k-1)))*1e4;
 D_cc_cm = 2*sqrt(A_cc_cm/pi);
-L_star = 180; % [cm]
+L_star = 165; % [cm]
 V_cc = L_star*A_t_cm;
-L_cc = V_cc/A_cc_cm; % cm
+L_cc = (V_cc/A_cc_cm)*1.3; % cm
 %% Conical nozzle
 beta = 45*pi/180;
 alpha = 15*pi/180;
