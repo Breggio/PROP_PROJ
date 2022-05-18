@@ -24,12 +24,14 @@ rho_ox = 1373; % [kg/m^3] oxidizer density
 % deltaP_openclose = 15*6894.76; % [Pa] Pressure loss due to open-close valve
 % deltaP_valve = deltaP_check + deltaP_openclose; % Pressure loss due to open-close valve and check valve
 % deltaP_feed = 0.05*101325; % [Pa] Pressure loss of the feeding line
-d_pipe = 0.010; % [m] Diameter of the pipes
-A_pipe = d_pipe^2*pi/4; % [m^2] Area of the pipes
+d_pipe_f = 0.010; % [m] Diameter of the pipes
+A_pipe_f = (d_pipe_f^2)*pi/4; % [m^2] Area of the pipes
+d_pipe_ox = 0.050; % [m] Diameter of the pipes
+A_pipe_ox = (d_pipe_ox^2)*pi/4; % [m^2] Area of the pipes
 
 % [m/s] Velocity of the propellant in the feeding lines
-u_f = m_dot_f/(A_pipe*rho_f);
-u_ox = m_dot_ox/(A_pipe*rho_ox);
+u_f_pipe = m_dot_f/(A_pipe_f*rho_f);
+u_ox_pipe = m_dot_ox/(A_pipe_ox*rho_ox);
 
 % deltaP_dyn_f = 0.05*rho_f*u_f^2; % [Pa] Dynamic pressure loss in the feeding lines - fuel
 % deltaP_dyn_ox = 0.05*rho_ox*u_ox^2; % [Pa] Dynamic pressure loss in the feeding lines - oxidizer
@@ -39,7 +41,7 @@ u_ox = m_dot_ox/(A_pipe*rho_ox);
 % Pt_in_f = Pc_in + deltaP_valve + deltaP_feed + deltaP_dyn_f + deltaP_inj_in;
 % Pt_in_ox = Pc_in + deltaP_valve + deltaP_feed + deltaP_dyn_ox + deltaP_inj_in;
 
-B = 3; % Blow down ratio [3-4]
+B = 1.2; % Blow down ratio [3-4]
 
 % % Final pressure in fuel and oxidizer tanks
 % Pt_fin_f = Pt_in_f/B;
@@ -95,30 +97,33 @@ L = 0.50; %[m]  pipe's length MUST BE LOOKED ON SOURCES
 % Darcy friction factor from chart (remember to put it in the appendix) for a turbolent 
 % flow with a relative pipe roughness of
 rough = 0.0025; %[mm]
-d_pipe_mm = d_pipe*10^3; %[mm]
-rel_rough = rough/d_pipe_mm;
+d_pipe_f_mm = d_pipe_f*10^3; %[mm]
+rel_rough_f = rough/d_pipe_f_mm;
+d_pipe_ox_mm = d_pipe_ox*10^3; %[mm]
+rel_rough_ox = rough/d_pipe_ox_mm;
 Re_f = 5.453*10^6;
 Re_ox = 6.691*10^5;
 f_f = 0.015;
 f_ox = 0.014;
 
-[R_cooling_f] = cooling_losses(f_f, d_pipe, L, rho_f, A_pipe);
-[R_cooling_ox] = cooling_losses(f_ox, d_pipe, L, rho_ox, A_pipe);
-[R_valves_f] = valves_losses(rho_f,A_pipe);
-[R_valves_ox] = valves_losses(rho_ox, A_pipe);
+[R_cooling_f] = cooling_losses(f_f, d_pipe_f, L, rho_f, A_pipe_f);
+[R_cooling_ox] = cooling_losses(f_ox, d_pipe_ox, L, rho_ox, A_pipe_ox);
+[R_valves_f] = valves_losses(rho_f,A_pipe_f);
+[R_valves_ox] = valves_losses(rho_ox, A_pipe_ox);
 [R_inj_f] = inj_loss_reb(rho_f, A_inj_f, Cd, N_f);
 [R_inj_ox] = inj_loss_reb(rho_ox, A_inj_ox, Cd, N_ox);
-[R_feed_f] = feeding_losses(f_f, rho_f, L, d_pipe);
-[R_feed_ox] = feeding_losses(f_ox, rho_ox, L, d_pipe);
+[R_feed_f] = feeding_losses(f_f, rho_f, L, d_pipe_f);
+[R_feed_ox] = feeding_losses(f_ox, rho_ox, L, d_pipe_ox);
 [R_dyn_f] = dynamic_losses(rho_f, A_f);
 [R_dyn_ox] = dynamic_losses(rho_ox, A_ox); 
 R_tot_f = R_inj_f + R_feed_f + R_dyn_f + R_valves_f + R_cooling_f;
 R_tot_ox = R_inj_ox + R_feed_ox + R_dyn_ox + R_valves_ox + R_cooling_ox;
 
+
 Pt_in_f = Pc_in + R_tot_f*m_dot_f^2;
 Pt_in_ox = Pc_in + R_tot_ox*m_dot_ox^2;
 
-OF_vect = [];
+OF_vect = OF;
 m_dot_f_vect = [];
 m_dot_ox_vect = [];
 m_dot_vect = [];
@@ -126,7 +131,6 @@ P_tank_f_vect = Pt_in_f;
 P_tank_ox_vect = Pt_in_ox;
 Pc_vect = Pc_in;
 
-OF_old = OF;
 m_dot_f_old = m_dot_f;
 m_dot_ox_old = m_dot_ox;
 m_dot_old = m_dot;
