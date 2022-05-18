@@ -52,8 +52,10 @@ L_cc = V_cc/A_cc_cm; % cm
 %% Conical nozzle
 beta = 45*pi/180;
 alpha = 15*pi/180;
-lambda = (1+cos(alpha))/2;
+lambda = (1+cos(alpha))/2; % coff of losses 
 T2D = lambda * T; 
 L_DIV = 0.5*(D_e_cm-D_t_cm)/tan(alpha); % cm
-L_CON = 0.5*(D_cc_cm-D_t_cm)/tan(alpha); % cm
+L_CON = 0.5*(D_cc_cm-D_t_cm)/tan(beta); % cm
 L_tot_nozzle = L_CON + L_DIV; % cm
+
+% displacement loss not relevant 
