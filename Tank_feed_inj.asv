@@ -138,12 +138,12 @@ for i = 2:dt:(tb*1000+1)
     O_F(i) = m_dot_oxid(i)/m_dot_fuel(i);
     V_gas_fuel(i) = V_gas_fuel(i-1)*P_tank_fuel(i-1)/P_tank_fuel(i);
     V_gas_oxid(i) = V_gas_oxid(i-1)*P_tank_oxid(i-1)/P_tank_oxid(i);
+    i
 
 
 end
 
-
-
+%%
 
 % %% Isothermic model
 % 
