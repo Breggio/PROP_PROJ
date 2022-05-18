@@ -11,7 +11,8 @@ function [R_dyn] = dynamic_losses(rho, A)
 %  A            Area of the pipe at the exit of the tank [m^2]
 %
 % OUTPUT:
-%  R_dyn        Pression drop coefficient [Pa/(kg^2/s^2)]
+%  R_dyn        Resistance coefficient for propellant flow path
+%               [Pa/(kg^2/s^2)]
 %
 % CONTRIBUTORS:
 %   Léonie DEU
