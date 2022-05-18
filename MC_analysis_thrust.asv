@@ -1,0 +1,21 @@
+close all; clearvars; clc;
+set(0,'defaulttextInterpreter','latex'); 
+set(groot,'defaultAxesTickLabelInterpreter','latex'); 
+set(groot,'defaultLegendInterpreter','latex');
+
+%% Thrust Monte Carlo Simulation
+
+%% Constants
+
+%% Variable ranges
+
+% Roughness in feeding lines
+N_f_feed = 10;
+f_feed_vec = 0.005 + (0.05-0.005).*rand(N_dv,1);
+% lambda
+N_lambda = 10;
+lambda_vec = -pi/2 + (2*pi/2).*rand(N_lambda,1);
+% phi
+N_phi = 10;
+phi_vec = 0 + (2*pi).*rand(N_phi,1);
+

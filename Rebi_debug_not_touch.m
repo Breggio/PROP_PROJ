@@ -35,9 +35,6 @@ deltaP_dyn_f = 0.05*rho_f*u_f^2; % [Pa] Dynamic pressure loss in the feeding lin
 deltaP_dyn_ox = 0.05*rho_ox*u_ox^2; % [Pa] Dynamic pressure loss in the feeding lines - oxidizer
 deltaP_inj_in = 0.05*Pc_in; % Pressure loss due to injection (15-25% of Pc)
 
-% Initial pressure in fuel and oxidizer tanks
-Pt_in_f = Pc_in + deltaP_valve + deltaP_feed + deltaP_dyn_f + deltaP_inj_in;
-Pt_in_ox = Pc_in + deltaP_valve + deltaP_feed + deltaP_dyn_ox + deltaP_inj_in;
 
 B = 3; % Blow down ratio [3-4]
 
@@ -91,12 +88,20 @@ O_F = [];
 m_dot_fuel = [];
 m_dot_oxid = [];
 m_dot_tot = [];
-P_tank_fuel = Pt_in_f;
-P_tank_oxid = Pt_in_ox;
-V_gas_fuel = V_gas_in_f;
-V_gas_oxid = V_gas_in_ox;
-c_star = []; %DEVONO DARCELO DA CEA
+c_star = [];
 P_c = [];
+
+[R_inj_f(1)] = injection_losses(rho_f, A_inj_f, Cd, N_f);
+[R_inj_ox(1)] = injection_losses(rho_ox, A_inj_ox, Cd, N_ox);
+[R_feed_f(1)] = feeding_losses(f, rho_f, L, d_pipe);
+[R_feed_ox(1)] = feeding_losses(f, rho_ox, L, d_pipe);
+[R_dyn_f(1)] = dynamic_losses(rho_f, A_f)
+[R_dyn_ox(1)] = dynamic_losses(rho_ox, A_ox);
+R_tot_f(1) = R_inj_f(1) + R_feed_f(1) + R_dyn_f(1);
+
+% Initial pressure in fuel and oxidizer tanks
+Pt_in_f = Pc_in + R_tot_f(1)/m_dot_f^2;
+Pt_in_ox = Pc_in + R_tot_f(1)/m_dot_ox^2;
 
 O_F(1) = OF;
 m_dot_fuel(1) = m_dot_f;
@@ -115,12 +120,12 @@ for i = 2:dt:(tb*1000+1)
 
     P_tank_fuel(i) = Pt_in_f*(V_gas_in_f / ( sum( m_dot_fuel(1:i-1) )*(dt/1000)/rho_f*9.81 + V_gas_in_f ));
     P_tank_oxid(i) = Pt_in_ox.*(V_gas_in_ox ./ (sum(m_dot_oxid(1:i-1)).*(dt/1000)./rho_ox.*9.81 + V_gas_in_ox));
-%     [outputs] = CEA('problem','rocket','frozen','o/f',O_F(i-1),'case','CEAM-rocket1',...
-%     'p,Pa',P_c(i-1),'supsonic(ae/at)',80,'reactants','fuel','RP-1(L)','C',1,...
-%     'H',1.95000,'wt%',100,'t(k)',298.0,'oxid','H2O2(L)','wt%',87.5,...
-%     't(k)',330,'oxid','H2O(L)','wt%',12.5,'t(k)',330,...
-%     'output','thermochemical','end');
-%     c_star(i) = outputs.output.froz.cstar(1);
+    [outputs] = CEA('problem','rocket','frozen','o/f',O_F(i-1),'case','CEAM-rocket1',...
+    'p,Pa',P_c(i-1),'supsonic(ae/at)',80,'reactants','fuel','RP-1(L)','C',1,...
+    'H',1.95000,'wt%',100,'t(k)',298.0,'oxid','H2O2(L)','wt%',87.5,...
+    't(k)',330,'oxid','H2O(L)','wt%',12.5,'t(k)',330,...
+    'output','thermochemical','end');
+    c_star(i) = outputs.output.froz.cstar(1);
     P_c(i) = m_dot_tot(i-1)*1579/A_t
 %     [R_valves_f(i)] = valves_losses(rho_f);
 %     [R_valves_ox(i)] = valves_losses(rho_f);
