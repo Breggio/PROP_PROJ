@@ -49,10 +49,13 @@ L_cc = V_cc/A_cc_cm; % cm
 
 
 %% Conical nozzle
-beta = 45*pi/180;
-alpha = 15*pi/180;
+beta = 45*pi/180; % angolo convergente 
+alpha = 15*pi/180; % angolo divergente
 lambda = (1+ cos(alpha))/2;
 T2D = lambda * T; % [N] Thrust considering the divergence loss 
 L_DIV = 0.5*(D_e_cm-D_t_cm)/tan(alpha);
 L_CON = 0.5*(D_cc_cm-D_t_cm)/tan(alpha);
 L_tot = L_CON + L_DIV; % [cm]
+
+
+lunghezza_camer_di_spinta = L_tot + L_cc % cm

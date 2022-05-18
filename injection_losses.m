@@ -1,4 +1,4 @@
-function [R_inj] = injection_losses(rho, A_inj, C_d)
+function [R_inj] = injection_losses(rho, A_inj, C_d, N)
 %INJECTION_LOSSES This function returns the coefficient that multiplies
 % the square of the mass flow rate in the expression of the pressure drop
 % due to injection plate.
@@ -21,7 +21,9 @@ function [R_inj] = injection_losses(rho, A_inj, C_d)
 % VERSIONS
 %   2022-05-17:     First version
 
-R_inj = 8/rho*1/(A_inj*C_d)^2;
+A_tot = A_inj * N; 
+
+R_inj = 8/rho*1/(A_tot*C_d)^2;
 
 % if R_inj > 0.3*P_c
 %     disp("Attention: the injection losses are too high!")

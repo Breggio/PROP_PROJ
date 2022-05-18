@@ -132,8 +132,8 @@ for i = 2:dt:(tb*1000+1)
 %     [R_feed_ox(i)] = feeding_losses(f, rho_ox, L, d_pipe);
 %     [R_dyn_f(i)] = dynamic_losses(rho_f, A_f)
 %     [R_dyn_ox(i)] = dynamic_losses(rho_ox, A_ox);
-    [m_dot_fuel(i)] = mass_flow_rate(P_tank_fuel(i), P_c(i),  R_valves_f(i)*4)
-    [m_dot_oxid(i)] = mass_flow_rate(P_tank_oxid(i), P_c(i), R_valves_ox(i)*4);
+    [m_dot_fuel(i)] = mass_flow_rate(P_tank_fuel(i), P_c(i),  R_dyn_f(i))
+    [m_dot_oxid(i)] = mass_flow_rate(P_tank_oxid(i), P_c(i), R_dyn_ox(i));
     m_dot_tot(i) = m_dot_oxid(i) + m_dot_fuel(i)
     O_F(i) = m_dot_oxid(i)/m_dot_fuel(i);
     i
