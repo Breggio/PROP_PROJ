@@ -1,0 +1,6 @@
+% Computing the pressure drops along CC and Nozzle 
+
+
+% CC
+% Heat Transfer 
+dP/p = ((1-gamma*M^2)*(1+((gamma-1)*M^2)/2))/(1-M^2)
