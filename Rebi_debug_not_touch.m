@@ -111,29 +111,30 @@ dt = 1; %[ms]
 P_c(1) = Pc_in;
 A_t = 2.5450e-5; %[m^2]
 
+[R_inj_f] = injection_losses(rho_f, A_inj_f, Cd, N_f);
+[R_inj_ox] = injection_losses(rho_ox, A_inj_ox, Cd, N_ox);
+[R_feed_f] = feeding_losses(f, rho_f, L, d_pipe);
+[R_feed_ox] = feeding_losses(f, rho_ox, L, d_pipe);
+[R_dyn_f] = dynamic_losses(rho_f, A_f);
+[R_dyn_ox] = dynamic_losses(rho_ox, A_ox); 
+R_tot_f = R_inj_f + R_feed_f + R_dyn_f;
+R_tot_ox = R_inj_ox + R_feed_ox + R_dyn_ox;
+
 for i = 2:dt:(tb*1000+1)
 
     P_tank_fuel(i) = Pt_in_f*(V_gas_in_f / ( sum( m_dot_fuel(1:i-1) )*(dt/1000)/rho_f*9.81 + V_gas_in_f ));
     P_tank_oxid(i) = Pt_in_ox.*(V_gas_in_ox ./ (sum(m_dot_oxid(1:i-1)).*(dt/1000)./rho_ox.*9.81 + V_gas_in_ox));
-%     [outputs] = CEA('problem','rocket','frozen','o/f',O_F(i-1),'case','CEAM-rocket1',...
-%     'p,Pa',P_c(i-1),'supsonic(ae/at)',80,'reactants','fuel','RP-1(L)','C',1,...
-%     'H',1.95000,'wt%',100,'t(k)',298.0,'oxid','H2O2(L)','wt%',87.5,...
-%     't(k)',330,'oxid','H2O(L)','wt%',12.5,'t(k)',330,...
-%     'output','thermochemical','end');
-%     c_star(i) = outputs.output.froz.cstar(1);
-    P_c(i) = m_dot_tot(i-1)*1579/A_t
+    [outputs] = CEA('problem','rocket','frozen','o/f',O_F(i-1),'case','CEAM-rocket1',...
+    'p,Pa',P_c(i-1),'supsonic(ae/at)',80,'reactants','fuel','RP-1(L)','C',1,...
+    'H',1.95000,'wt%',100,'t(k)',298.0,'oxid','H2O2(L)','wt%',87.5,...
+    't(k)',330,'oxid','H2O(L)','wt%',12.5,'t(k)',330,...
+    'output','thermochemical','end');
+    c_star(i) = outputs.output.froz.cstar(1);
+    P_c(i) = m_dot_tot(i-1)*c_star(i)/A_t;
 %     [R_valves_f(i)] = valves_losses(rho_f);
 %     [R_valves_ox(i)] = valves_losses(rho_f);
-    [R_inj_f(i)] = injection_losses(rho_f, A_inj_f, Cd, N_f);
-    [R_inj_ox(i)] = injection_losses(rho_ox, A_inj_ox, Cd, N_ox);
-    [R_feed_f(i)] = feeding_losses(f, rho_f, L, d_pipe);
-    [R_feed_ox(i)] = feeding_losses(f, rho_ox, L, d_pipe);
-    [R_dyn_f(i)] = dynamic_losses(rho_f, A_f)
-    [R_dyn_ox(i)] = dynamic_losses(rho_ox, A_ox);
-    R_tot_f(i) = R_inj_f(i) + R_feed_f(i) + R_dyn_f(i);
-    R_tot_ox(i) = R_inj_ox(i) + R_feed_ox(i) + R_dyn_ox(i);
-    [m_dot_fuel(i)] = mass_flow_rate(P_tank_fuel(i), P_c(i),  R_tot_f(i))
-    [m_dot_oxid(i)] = mass_flow_rate(P_tank_oxid(i), P_c(i), R_tot_ox(i));
+    [m_dot_fuel(i)] = mass_flow_rate(P_tank_fuel(i), P_c(i),  R_tot_f);
+    [m_dot_oxid(i)] = mass_flow_rate(P_tank_oxid(i), P_c(i), R_tot_ox);
     m_dot_tot(i) = m_dot_oxid(i) + m_dot_fuel(i);
     O_F(i) = m_dot_oxid(i)/m_dot_fuel(i);
     i
