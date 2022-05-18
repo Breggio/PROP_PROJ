@@ -24,10 +24,6 @@ Is = Is2/g0; % [s]
 % Output
 Cv = Cp - R; % Mayer's relation
 k = Cp/Cv; % definition of gamma/k, and also from CEA
-% ... solve formula 1/epsilon = ...
-% x = Pe/Pc, just for simplicity
-% v_exit = sqrt( 1-(Pe2Pc)^((k-1)/k) ) * sqrt( (2*k/(k-1)) * R*1e3/Mmol * T_cc);
-% mfr_nominal = T/(g0*Is);
 Mach_e = 4.856; % from CEA
 v_sonic_e = 609.1; % [m/s]
 u_e = Mach_e * v_sonic_e; % exit velocity [m/s]
