@@ -55,8 +55,8 @@ K_L_latch = 0.15;
 K_L_check = 2;
 
 %% Computation of resistance coefficient
-R_latch = 0.5*K_L_latch/(rho*A^2); % [Pa/(kg^2/s^2)]
-R_check = 0.5*K_L_check/(rho*A^2); % [Pa/(kg^2/s^2)]
+R_latch = (0.5*K_L_latch)/(rho*A^2); % [Pa/(kg^2/s^2)]
+R_check = (0.5*K_L_check)/(rho*A^2); % [Pa/(kg^2/s^2)]
 
 R_valves = R_latch + R_check;
 

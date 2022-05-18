@@ -1,4 +1,4 @@
-function [R_feed] = feeding_losses(f_D, rho, L, D)
+ function [R_feed] = feeding_losses(f_D, rho, L, D)
 %FEEDING_LOSSES This function returns the coefficient that multiplies
 % the square of the mass flow rate in the expression of the pressure drop
 % due to feeding line.
@@ -22,7 +22,7 @@ function [R_feed] = feeding_losses(f_D, rho, L, D)
 % VERSIONS
 %   2022-05-17:     First version
 
-R_feed = 8/pi^2*f_D/rho*L/D^5; % [Pa/(kg^2/s^2)]
+R_feed = (8/pi^2)*(f_D/rho)*(L/D^5); % [Pa/(kg^2/s^2)]
 
 end
 
