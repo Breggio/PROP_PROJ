@@ -58,4 +58,4 @@ L_CON = 0.5*(D_cc_cm-D_t_cm)/tan(alpha);
 L_tot = L_CON + L_DIV; % [cm]
 
 
-lunghezza_camer_di_spinta = L_tot + L_cc % cm
+lunghezza_camer_di_spinta = L_tot + L_cc; % cm

@@ -23,7 +23,7 @@ function [R_inj] = injection_losses(rho, A_inj, C_d, N)
 
 A_tot = A_inj * N; 
 
-R_inj = (8/rho)*(1/(A_tot*C_d)^2);
+R_inj = 1/(rho*2*(A_tot*C_d)^2);
 
 % if R_inj > 0.3*P_c
 %     disp("Attention: the injection losses are too high!")

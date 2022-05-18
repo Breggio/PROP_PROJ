@@ -112,6 +112,7 @@ c_star(1) = 1579; %DEVONO DARCELO DA CEA
 dt = 1; %[ms]
 P_c(1) = Pc_in;
 A_t = 2.5450e-5; %[m^2]
+options = optimset('Display', 'off');
 
 for i = 2:dt:(tb*1000+1)
 
@@ -124,17 +125,23 @@ for i = 2:dt:(tb*1000+1)
 %     'output','thermochemical','end');
 %     c_star(i) = outputs.output.froz.cstar(1);
     P_c(i) = m_dot_tot(i-1)*1579/A_t
-    [R_valves_f(i)] = valves_losses(rho_f);
-    [R_valves_ox(i)] = valves_losses(rho_f);
+%     [R_valves_f(i)] = valves_losses(rho_f);
+%     [R_valves_ox(i)] = valves_losses(rho_f);
 %     [R_inj_f(i)] = injection_losses(rho_f, A_inj_f, Cd, N_f);
 %     [R_inj_ox(i)] = injection_losses(rho_ox, A_inj_ox, Cd, N_ox);
 %     [R_feed_f(i)] = feeding_losses(f, rho_f, L, d_pipe);
 %     [R_feed_ox(i)] = feeding_losses(f, rho_ox, L, d_pipe);
 %     [R_dyn_f(i)] = dynamic_losses(rho_f, A_f)
 %     [R_dyn_ox(i)] = dynamic_losses(rho_ox, A_ox);
-    [m_dot_fuel(i)] = mass_flow_rate(P_tank_fuel(i), P_c(i),  R_valves_f(i)*4)
-    [m_dot_oxid(i)] = mass_flow_rate(P_tank_oxid(i), P_c(i), R_valves_ox(i)*4);
-    m_dot_tot(i) = m_dot_oxid(i) + m_dot_fuel(i)
+%     [m_dot_fuel(i)] = mass_flow_rate(P_tank_fuel(i), P_c(i),  R_valves_f(i)*4)
+%     [m_dot_oxid(i)] = mass_flow_rate(P_tank_oxid(i), P_c(i), R_valves_ox(i)*4);
+R_valves_f = 1e6;
+R_valves_ox = 4e6;
+f = @(x) R_valves_f.*x.^2 +x.*1579/A_t - P_tank_fuel(i);
+m_dot_fuel(i) = fsolve(f, m_dot_f, options)
+g = @(y) R_valves_ox.*y.^2 +y.*1579/A_t - P_tank_oxid(i);
+m_dot_oxid(i) = fsolve(g, m_dot_ox, options)
+    m_dot_tot(i) = m_dot_oxid(i) + m_dot_fuel(i);
     O_F(i) = m_dot_oxid(i)/m_dot_fuel(i);
     i
 
