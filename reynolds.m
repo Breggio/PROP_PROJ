@@ -1,5 +1,5 @@
 clc
-clear all 
+clear all
 
 rho_t = 1.1931; %[kg/m^3]
 v_t = 1061.2; %[m/s]
