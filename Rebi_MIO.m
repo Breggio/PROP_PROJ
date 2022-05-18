@@ -24,12 +24,12 @@ rho_ox = 1373; % [kg/m^3] oxidizer density
 % deltaP_openclose = 15*6894.76; % [Pa] Pressure loss due to open-close valve
 % deltaP_valve = deltaP_check + deltaP_openclose; % Pressure loss due to open-close valve and check valve
 % deltaP_feed = 0.05*101325; % [Pa] Pressure loss of the feeding line
-d_pipe = 0.005; % [m] Diameter of the pipes
+d_pipe = 0.010; % [m] Diameter of the pipes
 A_pipe = d_pipe^2*pi/4; % [m^2] Area of the pipes
 
 % [m/s] Velocity of the propellant in the feeding lines
-u_f_pipe = m_dot_f/A_pipe/rho_f;
-u_ox_pipe = m_dot_ox/A_pipe/rho_ox;
+u_f = m_dot_f/A_pipe/rho_f;
+u_ox = m_dot_ox/A_pipe/rho_ox;
 
 % deltaP_dyn_f = 0.05*rho_f*u_f^2; % [Pa] Dynamic pressure loss in the feeding lines - fuel
 % deltaP_dyn_ox = 0.05*rho_ox*u_ox^2; % [Pa] Dynamic pressure loss in the feeding lines - oxidizer
@@ -39,7 +39,7 @@ u_ox_pipe = m_dot_ox/A_pipe/rho_ox;
 % Pt_in_f = Pc_in + deltaP_valve + deltaP_feed + deltaP_dyn_f + deltaP_inj_in;
 % Pt_in_ox = Pc_in + deltaP_valve + deltaP_feed + deltaP_dyn_ox + deltaP_inj_in;
 
-B = 3; % Blow down ratio [3-4]
+B = 1.3; % Blow down ratio [3-4]
 
 % % Final pressure in fuel and oxidizer tanks
 % Pt_fin_f = Pt_in_f/B;
@@ -63,33 +63,33 @@ V_tank_ox = V_ox + V_gas_in_ox; % [m^3] Oxidizer tank
 %% Injection plate
 
 % Configuration: the one from the training session
-Cd = 0.76; % [-] Discharge coefficient, depends on geometry & size of plate
-d_inj_f = 0.00157; % [m] Fuel injector diameter DA VERIFICARE CON ADDITITVE MANUFACTURING
+Cd = 0.7; % [-] Discharge coefficient, depends on geometry & size of plate
+d_inj_f = 0.0005; % [m] Fuel injector diameter
 
-Delta_P_inj = 0.115*Pc_in; %IPOTIZZATA COME PRIMA GUESS
-
-A_f = m_dot_f/(Cd*sqrt(2*Delta_P_inj*rho_f)); % [m^2] Fuel total injection area
+A_f = m_dot_f/(Cd*sqrt(2*8.9576e+05*rho_f)); % [m^2] Fuel total injection area
 A_inj_f = pi*d_inj_f^2/4; % [m^2] Area of 1 fuel injector
 N_f = ceil(A_f/A_inj_f); % [-] Number of fuel orifices
 
-A_ox = m_dot_ox/(Cd*sqrt(2*Delta_P_inj*rho_ox)); % [m^2] Oxidizer total injection area
+A_ox = m_dot_ox/(Cd*sqrt(2*1.7042e+06*rho_ox)); % [m^2] Oxidizer total injection area
 N_ox = N_f; % [-] Number of oxidizer orifices
 A_inj_ox = A_ox/N_ox; % [m^2] Area of 1 oxidizer injector
 
 d_inj_ox = sqrt(4*A_inj_ox/pi); % [m] Oxidizer injector diameter
 
-u_ox = Cd*sqrt(2*Delta_P_inj/rho_ox); % [m/s] Oxidizer discharge velocity
-u_f = Cd*sqrt(2*Delta_P_inj/rho_f); % [m/s] Fuel discharge velocity
+u_ox = Cd*sqrt(2*8.9576e+05/rho_ox); % [m/s] Oxidizer discharge velocity
+u_f = Cd*sqrt(2*1.7042e+06/rho_f); % [m/s] Fuel discharge velocity
 
-gamma_f = 30; % [deg] Oxidizer injector angle, ASSUMED
-gamma_ox = asind((m_dot_f/m_dot_ox)*(u_f/u_ox)*sind(gamma_f)); % [deg] Oxidizer injector angle
+gamma_ox = 30; % [deg] Oxidizer injector angle, ASSUMED
+gamma_f = asind(m_dot_ox/m_dot_f*u_ox/u_f*sind(gamma_ox)); % [deg] Oxidizer injector angle
 
 %% Iterative process
 k = 1.66; %He
 L = 1; %[m]  MUST BE LOOKED ON SOURCES
 f = 0.012;
 
-[R_inj_f] = inj_loss_reb(rho_f, A_inj_f, Cd, N_f);
+[R_valves_f] = valves_losses(rho_f,);
+[R_valves_ox] = valves_losses(rho_ox,);
+[R_inj_f] = injection_losses(rho_f, A_inj_f, Cd, N_f);
 [R_inj_ox] = injection_losses(rho_ox, A_inj_ox, Cd, N_ox);
 [R_feed_f] = feeding_losses(f, rho_f, L, d_pipe);
 [R_feed_ox] = feeding_losses(f, rho_ox, L, d_pipe);
@@ -100,8 +100,6 @@ R_tot_ox = R_inj_ox + R_feed_ox + R_dyn_ox;
 
 Pt_in_f = Pc_in + R_tot_f*m_dot_f^2;
 Pt_in_ox = Pc_in + R_tot_ox*m_dot_ox^2;
-
-%%
 
 OF_vect = [];
 m_dot_f_vect = [];
@@ -118,20 +116,20 @@ m_dot_old = m_dot;
 P_tank_f_old = Pt_in_f;
 P_tank_ox_old = Pt_in_ox;
 c_star_old = 1579; %DEVONO DARCELO DA CEA
-dt = 1; %[ms]
+dt = 1; %[cs]
 Pc_old = Pc_in;
 A_t = 2.5450e-5; %[m^2]
 
 
 
-for i = 1:dt:(tb*1000+1)
+for i = 1:dt:(tb*10+1)
 
     m_dot_f_vect(1) = m_dot_f_old;
     m_dot_ox_vect(1) = m_dot_ox_old;
 
-    P_tank_f_new = Pt_in_f*(V_gas_in_f / ( sum( m_dot_f_vect(1:i)).*(dt/1000)/rho_f*9.81 + V_gas_in_f ));
+    P_tank_f_new = Pt_in_f*(V_gas_in_f / ( sum( m_dot_f_vect(1:i)).*(dt/10)/rho_f*9.81 + V_gas_in_f ));
     P_tank_f_vect = [P_tank_f_vect P_tank_f_new];
-    P_tank_ox_new = Pt_in_ox.*(V_gas_in_ox ./ (sum(m_dot_ox_vect(1:i)).*(dt/1000)./rho_ox.*9.81 + V_gas_in_ox));
+    P_tank_ox_new = Pt_in_ox.*(V_gas_in_ox ./ (sum(m_dot_ox_vect(1:i)).*(dt/10)./rho_ox.*9.81 + V_gas_in_ox));
     P_tank_ox_vect = [P_tank_ox_vect P_tank_ox_new];
     [outputs] = CEA('problem','rocket','frozen','o/f',OF_old,'case','CEAM-rocket1',...
     'p,Pa',Pc_old,'supsonic(ae/at)',80,'reactants','fuel','RP-1(L)','C',1,...
@@ -141,8 +139,6 @@ for i = 1:dt:(tb*1000+1)
     c_star_new = outputs.output.froz.cstar(1);
     Pc_new = m_dot_old*c_star_new/A_t;
     Pc_vect = [Pc_vect Pc_new];
-%     [R_valves_f(i)] = valves_losses(rho_f);
-%     [R_valves_ox(i)] = valves_losses(rho_f);
     [m_dot_f_new] = mass_flow_rate(P_tank_f_new, Pc_new,  R_tot_f);
     m_dot_f_vect = [m_dot_f_vect m_dot_f_new];
     [m_dot_ox_new] = mass_flow_rate(P_tank_ox_new, Pc_new, R_tot_ox);
@@ -158,6 +154,6 @@ for i = 1:dt:(tb*1000+1)
 
 end
 
-figure()
-plot([1:length(Pc_old)], Pc_old, 'LineWidth', 2.5)
+ct_end = outputs.output.froz.cf_vac(3)
 
+ 

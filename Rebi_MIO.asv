@@ -39,7 +39,7 @@ u_ox = m_dot_ox/A_pipe/rho_ox;
 % Pt_in_f = Pc_in + deltaP_valve + deltaP_feed + deltaP_dyn_f + deltaP_inj_in;
 % Pt_in_ox = Pc_in + deltaP_valve + deltaP_feed + deltaP_dyn_ox + deltaP_inj_in;
 
-B = 3; % Blow down ratio [3-4]
+B = 1.3; % Blow down ratio [3-4]
 
 % % Final pressure in fuel and oxidizer tanks
 % Pt_fin_f = Pt_in_f/B;
@@ -114,17 +114,20 @@ m_dot_old = m_dot;
 P_tank_f_old = Pt_in_f;
 P_tank_ox_old = Pt_in_ox;
 c_star_old = 1579; %DEVONO DARCELO DA CEA
-dt = 1; %[ms]
+dt = 1; %[cs]
 Pc_old = Pc_in;
 A_t = 2.5450e-5; %[m^2]
 
 
 
-for i = 1:dt:(tb*1000+1)
+for i = 1:dt:(tb*100+1)
 
-    P_tank_f_new = Pt_in_f*(V_gas_in_f / ( sum( m_dot_f_vect(1:i)).*(dt/1000)/rho_f*9.81 + V_gas_in_f ));
+    m_dot_f_vect(1) = m_dot_f_old;
+    m_dot_ox_vect(1) = m_dot_ox_old;
+
+    P_tank_f_new = Pt_in_f*(V_gas_in_f / ( sum( m_dot_f_vect(1:i)).*(dt/100)/rho_f*9.81 + V_gas_in_f ));
     P_tank_f_vect = [P_tank_f_vect P_tank_f_new];
-    P_tank_ox_new = Pt_in_ox.*(V_gas_in_ox ./ (sum(m_dot_ox_vect(1:i)).*(dt/1000)./rho_ox.*9.81 + V_gas_in_ox));
+    P_tank_ox_new = Pt_in_ox.*(V_gas_in_ox ./ (sum(m_dot_ox_vect(1:i)).*(dt/100)./rho_ox.*9.81 + V_gas_in_ox));
     P_tank_ox_vect = [P_tank_ox_vect P_tank_ox_new];
     [outputs] = CEA('problem','rocket','frozen','o/f',OF_old,'case','CEAM-rocket1',...
     'p,Pa',Pc_old,'supsonic(ae/at)',80,'reactants','fuel','RP-1(L)','C',1,...
@@ -145,7 +148,7 @@ for i = 1:dt:(tb*1000+1)
     OF_new = m_dot_ox_new/m_dot_f_new;
     OF_vect = [OF_vect OF_new];
 
-    m_dot_old = m_d
+    m_dot_old = m_dot_new;
     i
 
 
@@ -154,3 +157,4 @@ end
 figure()
 plot([1:length(Pc_old)], Pc_old, 'LineWidth', 2.5)
 
+ 
