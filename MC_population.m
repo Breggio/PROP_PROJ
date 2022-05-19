@@ -14,7 +14,7 @@ m_dot_ox = (OF/(1+OF))*m_dot; % nominal oxidizer mass flow rate [kg/s]
 m_dot_f = m_dot - m_dot_ox; % nominal fuel mass flow rate [kg/s]
 
 %% Preparing vectors for the results
-nb_iterations = 50; % number of iterations
+nb_iterations = 10; % number of iterations
 
 Mean_thrust = zeros(1, nb_iterations);
 Cumulative_mean_thrust = zeros(1, nb_iterations);
@@ -22,7 +22,7 @@ Standard_deviation_thrust = zeros(1, nb_iterations);
 Cumulative_standard_deviation_thrust = zeros(1, nb_iterations);
 
 %% 1) Parameters
-nb_samples = 100; % number of samples
+nb_samples = 5; % number of samples
 
 nom_d_inj_ox = 9.2114e-04; % nominal value of oxidizer injector diameter [m]
 nom_d_inj_f = 5.5395e-04; % nominal value of fuel injector diameter [m]
@@ -32,6 +32,7 @@ tol_A_th = (10e-06)^2; % tolerance on throat area [m^2]
 
 %% STARTING LOOP OF ITERATIONS
 for it = 1:nb_iterations
+sprintf('Iteration n°%d', it)
 
 %% 2) Define the population
 % Injection hole diameter oxidizer
@@ -92,6 +93,7 @@ for i = 1:length(Triplets_shuffled)
         a_th = triplet(3);
         thrust = calculate_thrust(d_ox, d_f, a_th, P_c, OF, C_d, rho_ox, rho_f, m_dot_ox, m_dot_f);
         Thrust(k) = thrust;
+        sprintf('Couple n°%d', k)
         k = k+1;
     end
 end
@@ -179,3 +181,4 @@ yline([Int_cm_inf Int_cm_sup], '--', {'Lower bound','Upper bound'}, 'LineWidth',
 
 subplot(1,2,2);
 yline([Int_sd_inf Int_sd_sup], '--', {'Lower bound','Upper bound'}, 'LineWidth', 1, 'color', '#D95319');
+
