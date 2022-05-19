@@ -10,7 +10,7 @@ function pressure_loss = control_valve_pressure_loss(volumic_mass)
 .
 %   VERSIONS : 2022/05/19, Alexandre BOULEUX
 %
-Rlatch = 1.31 * (1/(0.0001814*volumic_mass))^2 * (volumic_mass/1000);
-Rcheck = 0.21 * (1/(0.0012*volumic_mass))^2 * (volumic_mass/1141);
+Rlatch = 1.31 * (1/(0.0001814))^2 * (1/volumic_mass*1000);
+Rcheck = 0.21 * (1/(0.0012))^2 * (1/volumic_mass*1141);
 pressure_loss = Rlatch+Rcheck
 end

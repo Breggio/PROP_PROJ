@@ -67,9 +67,9 @@ V_tank_ox = V_ox + V_gas_in_ox; % [m^3] Oxidizer tank
 Cd = 0.65; % [-] Discharge coefficient, depends on geometry & size of plate DA VERIFICARE
 
 N_f = 1; % SCELTO DA NOI
-N_ox = 2; % SCELTO DA NOI
+N_ox = 4; % SCELTO DA NOI
 
-Delta_P_inj = 0.15*Pc_in; %IPOTIZZATA COME PRIMA GUESS
+Delta_P_inj = 0.2*Pc_in; %IPOTIZZATA COME PRIMA GUESS
 
 A_f = m_dot_f/(Cd*sqrt((2)*Delta_P_inj*rho_f)); % [m^2] Fuel total injection area
 A_inj_f = A_f/N_f; % [m^2] Area of 1 fuel injector
@@ -79,8 +79,8 @@ A_ox = m_dot_ox/(Cd*sqrt((2)*Delta_P_inj*rho_ox)); % [m^2] Oxidizer total inject
 A_inj_ox = A_ox/N_ox; % [m^2] Area of 1 oxidizer injector
 d_inj_ox = sqrt(A_inj_ox*4/pi); % [m] Oxidizer injector diameter
 
-u_ox = Cd*sqrt(2*Delta_P_inj/rho_ox); % [m/s] Oxidizer discharge velocity
-u_f = Cd*sqrt(2*Delta_P_inj/rho_f); % [m/s] Fuel discharge velocity
+u_ox = Cd*sqrt((1/8)*Delta_P_inj/rho_ox); % [m/s] Oxidizer discharge velocity
+u_f = Cd*sqrt((1/8)*Delta_P_inj/rho_f); % [m/s] Fuel discharge velocity
 
 gamma_f = 30; % [deg] Oxidizer injector angle, ASSUMED
 gamma_ox = asind((m_dot_f/m_dot_ox)*(u_f/u_ox)*sind(gamma_f)); % [deg] Oxidizer injector angle
@@ -135,8 +135,8 @@ R_tot_ox = R_inj_ox + R_feed_ox + R_dyn_ox + R_valves_ox + R_cooling_ox;
 Pt_in_f = Pc_in + R_tot_f*m_dot_f^2;
 Pt_in_ox = Pc_in + R_tot_ox*m_dot_ox^2;
 
-DP_f = R_inj_f*m_dot_f^2; % VERIFICARE CON Delta_P_inj
-DP_ox = R_inj_ox*m_dot_ox^2; %VERIFICARE CON Delta_P_inj
+DP_f = R_tot_f*m_dot_f^2; % VERIFICARE CON Delta_P_inj
+DP_ox = R_tot_ox*m_dot_ox^2; %VERIFICARE CON Delta_P_inj
 
 %% Iterative process
 OF_vect = [];
@@ -153,15 +153,15 @@ m_dot_old = m_dot;
 P_tank_f_old = Pt_in_f;
 P_tank_ox_old = Pt_in_ox;
 c_star_old = 1579; %DEVONO DARCELO DA CEA
-dt = 1; %[ds]
+dt = 1; %[cs]
 Pc_old = Pc_in;
 A_t = 2.5450e-5; %[m^2]
-for i = 1:dt:(tb)
+for i = 1:dt:(tb*1)
     m_dot_f_vect(1) = m_dot_f_old;
     m_dot_ox_vect(1) = m_dot_ox_old;
-    P_tank_f_new = Pt_in_f*(V_gas_in_f / ( sum( m_dot_f_vect(1:i)).*(dt/1)/rho_f + V_gas_in_f ));
+    P_tank_f_new = Pt_in_f*(V_gas_in_f / ( sum( m_dot_f_vect(1:i).*(dt/1))./rho_f + V_gas_in_f )).^1.66;
     P_tank_f_vect = [P_tank_f_vect P_tank_f_new];
-    P_tank_ox_new = Pt_in_ox.*(V_gas_in_ox ./ (sum(m_dot_ox_vect(1:i)).*(dt/1)./rho_ox + V_gas_in_ox));
+    P_tank_ox_new = Pt_in_ox.*(V_gas_in_ox ./ (sum(m_dot_ox_vect(1:i).*(dt/1))./rho_ox + V_gas_in_ox)).^1.66;
     P_tank_ox_vect = [P_tank_ox_vect P_tank_ox_new];
     [outputs] = CEA('problem','rocket','frozen','o/f',OF_old,'case','CEAM-rocket1',...
     'p,Pa',Pc_old,'supsonic(ae/at)',80,'reactants','fuel','RP-1(L)','C',1,...
@@ -180,59 +180,59 @@ for i = 1:dt:(tb)
     OF_new = m_dot_ox_new/m_dot_f_new;
     OF_vect = [OF_vect OF_new];
     m_dot_old = m_dot_new;
-    
+    i
 end
 
 ct_end = outputs.output.froz.cf_vac(3);
 T_end = A_t * Pc_vect(end) * ct_end
 
-% %% LOSSES PLOTS
-% 
-% m_dot_f_vect = m_dot_f_vect(1,1:1000);
-% m_dot_ox_vect = m_dot_ox_vect(1,1:1000);
-% P_tank_f_vect = P_tank_f_vect(1,1:1000);
-% P_tank_ox_vect = P_tank_ox_vect(1,1:1000);
-% 
-% subplot(2,3,1)
-% plot(linspace(1,tb,1000),R_cooling_ox.*m_dot_ox_vect.^2)
-% title('Cooling Losses')
-% legend('OX')
-% xlabel('Time [s]')
-% ylabel('Pressure Losses [Pa]')
-% subplot(2,3,2)
-% plot(linspace(1,tb,1000),R_feed_f.*m_dot_f_vect.^2)
-% hold on
-% plot(linspace(1,tb,1000),R_feed_ox.*m_dot_ox_vect.^2)
-% title('Feeding Losses')
-% legend('FU','OX')
-% xlabel('Time [s]')
-% ylabel('Pressure Losses [Pa]')
-% subplot(2,3,3)
-% plot(linspace(1,tb,1000),R_dyn_f.*m_dot_f_vect.^2)
-% hold on
-% plot(linspace(1,tb,1000),R_dyn_ox.*m_dot_ox_vect.^2)
-% title('Dynamic Losses')
-% legend('FU','OX')
-% xlabel('Time [s]')
-% ylabel('Pressure Losses [Pa]')
-% subplot(2,3,4)
-% plot(linspace(1,tb,1000),R_inj_f.*m_dot_f_vect.^2)
-% hold on
-% plot(linspace(1,tb,1000),R_inj_ox.*m_dot_ox_vect.^2)
-% title('Injection Losses')
-% legend('FU','OX')
-% xlabel('Time [s]')
-% ylabel('Pressure Losses [Pa]')
-% subplot(2,3,5)
-% plot(linspace(1,tb,1000),R_valves_f.*m_dot_f_vect.^2)
-% hold on
-% plot(linspace(1,tb,1000),R_valves_ox.*m_dot_ox_vect.^2)
-% title('Velves Losses')
-% legend('FU','OX')
-% xlabel('Time [s]')
-% ylabel('Pressure Losses [Pa]')
-% 
-% % it is clear how the losses which affect the fuel are lower because it's
-% % mass flow rate is one order of magnitude lower than the one of the
-% % oxidizer
-% 
+%% LOSSES PLOTS
+
+m_dot_f_vect = m_dot_f_vect(1,1:1000);
+m_dot_ox_vect = m_dot_ox_vect(1,1:1000);
+P_tank_f_vect = P_tank_f_vect(1,1:1000);
+P_tank_ox_vect = P_tank_ox_vect(1,1:1000);
+
+subplot(2,3,1)
+plot(linspace(1,tb,1000),R_cooling_ox.*m_dot_ox_vect.^2)
+title('Cooling Losses')
+legend('OX')
+xlabel('Time [s]')
+ylabel('Pressure Losses [Pa]')
+subplot(2,3,2)
+plot(linspace(1,tb,1000),R_feed_f.*m_dot_f_vect.^2)
+hold on
+plot(linspace(1,tb,1000),R_feed_ox.*m_dot_ox_vect.^2)
+title('Feeding Losses')
+legend('FU','OX')
+xlabel('Time [s]')
+ylabel('Pressure Losses [Pa]')
+subplot(2,3,3)
+plot(linspace(1,tb,1000),R_dyn_f.*m_dot_f_vect.^2)
+hold on
+plot(linspace(1,tb,1000),R_dyn_ox.*m_dot_ox_vect.^2)
+title('Dynamic Losses')
+legend('FU','OX')
+xlabel('Time [s]')
+ylabel('Pressure Losses [Pa]')
+subplot(2,3,4)
+plot(linspace(1,tb,1000),R_inj_f.*m_dot_f_vect.^2)
+hold on
+plot(linspace(1,tb,1000),R_inj_ox.*m_dot_ox_vect.^2)
+title('Injection Losses')
+legend('FU','OX')
+xlabel('Time [s]')
+ylabel('Pressure Losses [Pa]')
+subplot(2,3,5)
+plot(linspace(1,tb,1000),R_valves_f.*m_dot_f_vect.^2)
+hold on
+plot(linspace(1,tb,1000),R_valves_ox.*m_dot_ox_vect.^2)
+title('Velves Losses')
+legend('FU','OX')
+xlabel('Time [s]')
+ylabel('Pressure Losses [Pa]')
+
+% it is clear how the losses which affect the fuel are lower because it's
+% mass flow rate is one order of magnitude lower than the one of the
+% oxidizer
+
