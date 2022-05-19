@@ -15,9 +15,10 @@ set(groot,'defaultLegendInterpreter','latex');
 % QUESTO NEL CASO CAPIAMO COME CALCOLARE LA PERDITA DI PRESSIONE DOVUTA
 % ALLA ROUGHNESS SUPERFICIALE IN CAMERA
 
+
 % Injection holes diameter
 N_d_inj = 10;
-d_inj_vec = a + (b-a).*rand(N_inj_vec,1);
+d_inj_vec = 0.5E-3  (b-a).*rand(N_inj_vec,1);
 % Throat diameter
 N_d_th = 10;
 d_th_vec = a + (b-a).*rand(N_th_vec,1);
