@@ -147,7 +147,7 @@ for i = 1:dt:(tb*10)
 %     't(k)',350,'oxid','H2O(L)','wt%',12.5,'t(k)',350,...
 %     'output','thermochemical','end');
 %     c_star_new = outputs.output.froz.cstar(1);
-    Pc_new = m_dot_old*c_star_old/A_t;
+    Pc_new = (m_dot_old*c_star_old)/A_t;
     Pc_vect = [Pc_vect Pc_new];
     [R_inj_f] = injection_losses(rho_f, A_inj_f, Cd, N_f);
     [R_inj_ox] = injection_losses(rho_ox, A_inj_ox, Cd, N_ox);
