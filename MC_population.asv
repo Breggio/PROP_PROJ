@@ -5,11 +5,13 @@ clc
 %% Constants
 P_c = 20E5; % nominal combustion chamber pressure [Pa]
 C_d = 0; % nominal discharge coefficient [-]
-OX = 7.2; % nominal oxidizer to fuel ratio [-]
+OF = 7.2; % nominal oxidizer to fuel ratio [-]
 rho_f = 810; % fuel density [kg/m^3]
 rho_ox = 1373; % oxidizer density [kg/m^3]
-m_dot_ox = 0; % nominal oxidizer mass flow rate [kg/s]
-m_dot_f = 0; % nominal fuel mass flow rate [kg/s]
+
+m_dot = 0.0327; % propellant mass flow rate [kg/s]
+m_dot_ox = (OF/(1+OF))*m_dot; % nominal oxidizer mass flow rate [kg/s]
+m_dot_f = m_dot - m_dot_ox; % nominal fuel mass flow rate [kg/s]
 
 %% Preparing vectors for the results
 nb_iterations = 50; % number of iterations
@@ -85,7 +87,7 @@ k = 1;
 for i = 1:length(Triplets_shuffled)
     if mod(i,3) == 1 % selecting only odd indexes
         triplet = Triplets_shuffled(i:i+2);
-
+        
         Thrust(k) = thrust;
         k = k+1;
     end
@@ -113,16 +115,16 @@ hold on
 grid on
 xlabel('Monte Carlo iterations', 'Interpreter', 'latex');
 ylabel('Cumulative mean [N]', 'Interpreter', 'latex');
-title('\textbf{Cumulative mean of burning time}', 'Interpreter', 'latex');
+title('\textbf{Cumulative mean of thurst}', 'Interpreter', 'latex');
 
 % Plotting cumulative standard deviation
 subplot(1,2,2);
-plot(Cumulative_standard_deviation_tb, 'LineWidth', 1.5);
+plot(Cumulative_standard_deviation_thrust, 'LineWidth', 1.5);
 hold on
 grid on
 xlabel('Monte Carlo iterations', 'Interpreter', 'latex');
-ylabel('Cumulative standard deviation [s]', 'Interpreter', 'latex');
-title('\textbf{Cumulative standard deviation of burning time}', 'Interpreter', 'latex');
+ylabel('Cumulative standard deviation [N]', 'Interpreter', 'latex');
+title('\textbf{Cumulative standard deviation of thrust}', 'Interpreter', 'latex');
 
 sgtitle('\textbf{Monte Carlo analysis}', 'Interpreter', 'latex');
 
