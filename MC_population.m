@@ -4,7 +4,7 @@ clc
 
 %% Constants
 P_c = 20E5; % nominal combustion chamber pressure [Pa]
-C_d = 0; % nominal discharge coefficient [-]
+C_d = 0.65; % nominal discharge coefficient [-]
 OF = 7.2; % nominal oxidizer to fuel ratio [-]
 rho_f = 810; % fuel density [kg/m^3]
 rho_ox = 1373; % oxidizer density [kg/m^3]
@@ -87,7 +87,10 @@ k = 1;
 for i = 1:length(Triplets_shuffled)
     if mod(i,3) == 1 % selecting only odd indexes
         triplet = Triplets_shuffled(i:i+2);
-        
+        d_ox = triplet(1);
+        d_f = triplet(2);
+        a_th = triplet(3);
+        thrust = calculate_thrust(d_ox, d_f, a_th, P_c, OF, C_d, rho_ox, rho_f, m_dot_ox, m_dot_f);
         Thrust(k) = thrust;
         k = k+1;
     end

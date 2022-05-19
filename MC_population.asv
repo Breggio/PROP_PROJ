@@ -87,7 +87,10 @@ k = 1;
 for i = 1:length(Triplets_shuffled)
     if mod(i,3) == 1 % selecting only odd indexes
         triplet = Triplets_shuffled(i:i+2);
-        
+        d_ox = triplet(1);
+        d_f = triplet(2);
+        a_th = triplet(3);
+        thrust = calculate_thrust(d_ox, d_if, A_th, Pc_old, OF, Cd, rho_ox, rho_f, m_dot_ox, m_dot_f)
         Thrust(k) = thrust;
         k = k+1;
     end

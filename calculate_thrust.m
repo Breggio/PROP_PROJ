@@ -8,7 +8,7 @@ Delta_P_inj_ox_new = (1/(2*rho_ox))*(m_dot_ox/(A_inj_ox*Cd));
 A_inj_f = (pi*d_inj_f^2)/4;
 Delta_P_inj_f_new = (1/(2*rho_f))*(m_dot_f/(A_inj_f*Cd));
 
-Pc_new = Pc_old - (Delta_P_inj_f_new - Delta_P_inj_old) - (Delta_P_inj_f_new - Delta_P_inj_old);
+Pc_new = Pc_old - (Delta_P_inj_f_new - Delta_P_inj_old) - (Delta_P_inj_ox_new - Delta_P_inj_old);
 
 [outputs] = CEA('problem','rocket','frozen','o/f',OF,'case','CEAM-rocket1',...
     'p,Pa',Pc_new,'supsonic(ae/at)',80,'reactants','fuel','RP-1(L)','C',1,...
