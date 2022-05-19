@@ -26,7 +26,7 @@ A_pipe = d_pipe^2*pi/4; % [m^2] Area of the pipes
 u_f_pipe = m_dot_f/(A_pipe*rho_f);
 u_ox_pipe = m_dot_ox/(A_pipe*rho_ox);
 
-B = 1.9; % Blow down ratio [3-4]
+B = 1.2; % Blow down ratio [3-4]
 
 % % Final pressure in fuel and oxidizer tanks
 tb = 100; % [s] Burning time
@@ -54,7 +54,7 @@ Cd = 0.65; % [-] Discharge coefficient, depends on geometry & size of plate DA V
 N_f = 1; % SCELTO DA NOI
 N_ox = 2; % SCELTO DA NOI
 
-Delta_P_inj = 0.2*Pc_in; %IPOTIZZATA COME PRIMA GUESS
+Delta_P_inj = 0.25*Pc_in; %IPOTIZZATA COME PRIMA GUESS
 
 A_f = m_dot_f/(Cd*sqrt(2*Delta_P_inj*rho_f)); % [m^2] Fuel total injection area
 A_inj_f = A_f/N_f; % [m^2] Area of 1 fuel injector
@@ -109,7 +109,7 @@ DP_ox = R_inj_ox*m_dot_ox^2; %VERIFICARE CON Delta_P_inj
 %% ITERATIVE PROCESS
 
 dt = 1; %[s]
-tb = tb; %[s]
+tb = tb*10; %[s]
 c_star = 1621.9; %DEVONO DARCELO DA CEA???????
 A_t = 2.5450e-5; %[m^2]
 
@@ -133,15 +133,15 @@ OF_vect(1) = OF;
 options = optimset('Display','off');
 
 for i = 2:dt:tb
-    [outputs] = CEA('problem','rocket','frozen','o/f',OF_vect(i-1),'case','CEAM-rocket1',...
-        'p,Pa',Pc_vect(i-1),'supsonic(ae/at)',80,'reactants','fuel','RP-1(L)','C',1,...
-        'H',1.95000,'wt%',100,'t(k)',298.0,'oxid','H2O2(L)','wt%',87.5,...
-        't(k)',350,'oxid','H2O(L)','wt%',12.5,'t(k)',350,...
-        'output','thermochemical','end');
-    c_star(i) = outputs.output.froz.cstar(1);
+%     [outputs] = CEA('problem','rocket','frozen','o/f',OF_vect(i-1),'case','CEAM-rocket1',...
+%         'p,Pa',Pc_vect(i-1),'supsonic(ae/at)',80,'reactants','fuel','RP-1(L)','C',1,...
+%         'H',1.95000,'wt%',100,'t(k)',298.0,'oxid','H2O2(L)','wt%',87.5,...
+%         't(k)',350,'oxid','H2O(L)','wt%',12.5,'t(k)',350,...
+%         'output','thermochemical','end');
+%     c_star(i) = outputs.output.froz.cstar(1);
     sum_m_f(i-1) = dt*sum(m_dot_f_vect);
     sum_m_ox(i-1) = dt*sum(m_dot_ox_vect);
-    fun = @(x)root3d(x, sum_m_f(i-1), sum_m_ox(i-1), R_tot_f, R_tot_ox, Pt_in_f, Pt_in_ox, V_gas_in_f, V_gas_in_ox, rho_f, rho_ox, c_star(i), A_t, dt);
+    fun = @(x)root3d(x, sum_m_f(i-1), sum_m_ox(i-1), R_tot_f, R_tot_ox, Pt_in_f, Pt_in_ox, V_gas_in_f, V_gas_in_ox, rho_f, rho_ox, c_star, A_t, dt);
     x0 = [m_dot_f_vect(i-1), m_dot_ox_vect(i-1), Pc_vect(i-1)];
     x = fsolve(fun, x0, options);
     m_dot_f_vect(i) = x(1);
@@ -150,9 +150,15 @@ for i = 2:dt:tb
     i
 
 end
+
 P_tank_f_vect = Pc_vect + R_tot_f.*m_dot_f_vect.^2;
 P_tank_ox_vect = Pc_vect + R_tot_ox.*m_dot_ox_vect.^2;
 OF_vect = m_dot_ox_vect./m_dot_f_vect;
+
+[outputs] = CEA('problem','rocket','frozen','o/f',OF_vect(end),'case','CEAM-rocket1',...
+ 'p,Pa',Pc_vect(end),'supsonic(ae/at)',80,'reactants','fuel','RP-1(L)','C',1,...
+ 'H',1.95000,'wt%',100,'t(k)',298.0,'oxid','H2O2(L)','wt%',87.5,...
+ 't(k)',350,'oxid','H2O(L)','wt%',12.5,'t(k)',350,'output','thermochemical','end');
 
 ct_end = outputs.output.froz.cf_vac(3);
 T_end = A_t * Pc_vect(end) * ct_end
