@@ -136,7 +136,7 @@ for i = 2:dt:tb
     sum_m_ox = dt*sum(m_dot_ox_vect);
 
     fun_f = @(x_f) R_tot_f*x_f^2 + (c_star/A_t)*x_f - Pt_in_f*(V_gas_in_f/(V_gas_in_f + (dt*x_f + sum_m_f)/rho_f));
-    m_dot_f_vect(i) = fsolve(fun_f, m_dot_f,options);
+    m_dot_f_vect(i) = fsolve(fun_f, m_dot_f, options);
 
     fun_ox = @(x_ox) R_tot_ox*x_ox^2 + (c_star/A_t)*x_ox - Pt_in_ox*(V_gas_in_ox/(V_gas_in_ox + (dt*x_ox + sum_m_ox)/rho_ox));
     m_dot_ox_vect(i) = fsolve(fun_ox, m_dot_ox,options);
