@@ -26,7 +26,9 @@ function [R_cooling] = cooling_losses(f_D, d_h, L, rho, A)
 % VERSIONS
 %   2022-05-17:     First version
 
-R_cooling = 0.5*f_D/d_h*L/(rho*A^2);
+% R_cooling = 0.5*f_D/d_h*L/(rho*A^2); % CHECK
+R_cooling = ((0.5*f_D)/d_h)*(L/(rho*A^2)); % CHECK
+
 
 end
 
