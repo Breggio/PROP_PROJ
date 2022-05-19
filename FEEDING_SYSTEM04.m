@@ -135,20 +135,12 @@ for i = 2:dt:tb
     sum_m_f = dt*sum(m_dot_f_vect);
     sum_m_ox = dt*sum(m_dot_ox_vect);
 
-    fun_f = @(x_f) R_tot_f*x_f^2 + (c_star/A_t)*x_f - Pt_in_f*(V_gas_in_f/(V_gas_in_f + (dt*x_f + sum_m_f)/rho_f));
-    m_dot_f_vect(i) = fsolve(fun_f, m_dot_f,options);
+    guess_vec = [m_dot_ox, m_dot_f, Pc_in];
 
-    fun_ox = @(x_ox) R_tot_ox*x_ox^2 + (c_star/A_t)*x_ox - Pt_in_ox*(V_gas_in_ox/(V_gas_in_ox + (dt*x_ox + sum_m_ox)/rho_ox));
-    m_dot_ox_vect(i) = fsolve(fun_ox, m_dot_ox,options);
+    fun = @(x) calculate_mdot(dt, V_gas_in_ox, V_gas_in_f, sum_m_f, sum_m_ox, A_t);
 
-    OF_vect(i) = m_dot_ox_vect(i)/m_dot_f_vect(i);
+    var = fsolve(fun, guess_vec, options);
 
-    [outputs] = CEA('problem','rocket','frozen','o/f',OF_vect(i),'case','CEAM-rocket1',...
-    'p,Pa',Pc_vect(i-1),'supsonic(ae/at)',80,'reactants','fuel','RP-1(L)','C',1,...
-    'H',1.95000,'wt%',100,'t(k)',298.0,'oxid','H2O2(L)','wt%',87.5,...
-    't(k)',350,'oxid','H2O(L)','wt%',12.5,'t(k)',350,...
-    'output','thermochemical','end');
-    c_star = outputs.output.froz.cstar(1);
 
     m_dot_vect(i) = m_dot_f_vect(i) + m_dot_ox_vect(i);
 

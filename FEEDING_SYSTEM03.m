@@ -143,12 +143,12 @@ for i = 2:dt:tb
 
     OF_vect(i) = m_dot_ox_vect(i)/m_dot_f_vect(i);
 
-    [outputs] = CEA('problem','rocket','frozen','o/f',OF_vect(i),'case','CEAM-rocket1',...
-    'p,Pa',Pc_vect(i-1),'supsonic(ae/at)',80,'reactants','fuel','RP-1(L)','C',1,...
-    'H',1.95000,'wt%',100,'t(k)',298.0,'oxid','H2O2(L)','wt%',87.5,...
-    't(k)',350,'oxid','H2O(L)','wt%',12.5,'t(k)',350,...
-    'output','thermochemical','end');
-    c_star = outputs.output.froz.cstar(1);
+%     [outputs] = CEA('problem','rocket','frozen','o/f',OF_vect(i),'case','CEAM-rocket1',...
+%     'p,Pa',Pc_vect(i-1),'supsonic(ae/at)',80,'reactants','fuel','RP-1(L)','C',1,...
+%     'H',1.95000,'wt%',100,'t(k)',298.0,'oxid','H2O2(L)','wt%',87.5,...
+%     't(k)',350,'oxid','H2O(L)','wt%',12.5,'t(k)',350,...
+%     'output','thermochemical','end');
+%     c_star = outputs.output.froz.cstar(1);
 
     m_dot_vect(i) = m_dot_f_vect(i) + m_dot_ox_vect(i);
 
@@ -160,53 +160,53 @@ for i = 2:dt:tb
 
 end
 
-ct_end = outputs.output.froz.cf_vac(3);
-T_end = A_t * Pc_vect(end) * ct_end
-T_1 = A_t * Pc_vect(1) * ct_end;
-T_2 = A_t * Pc_vect(2) * ct_end;
-
-%% LOSSES PLOTS
-
-subplot(2,3,1)
-plot(linspace(1,tb,length(m_dot_f_vect)),R_cooling_ox.*m_dot_ox_vect.^2)
-title('Cooling Losses')
-legend('OX')
-xlabel('Time [s]')
-ylabel('Pressure Losses [Pa]')
-subplot(2,3,2)
-plot(linspace(1,tb,length(m_dot_f_vect)),R_feed_f.*m_dot_f_vect.^2)
-hold on
-plot(linspace(1,tb,length(m_dot_f_vect)),R_feed_ox.*m_dot_ox_vect.^2)
-title('Feeding Losses')
-legend('FU','OX')
-xlabel('Time [s]')
-ylabel('Pressure Losses [Pa]')
-subplot(2,3,3)
-plot(linspace(1,tb,length(m_dot_f_vect)),R_dyn_f.*m_dot_f_vect.^2)
-hold on
-plot(linspace(1,tb,length(m_dot_f_vect)),R_dyn_ox.*m_dot_ox_vect.^2)
-title('Dynamic Losses')
-legend('FU','OX')
-xlabel('Time [s]')
-ylabel('Pressure Losses [Pa]')
-subplot(2,3,4)
-plot(linspace(1,tb,length(m_dot_f_vect)),R_inj_f.*m_dot_f_vect.^2)
-hold on
-plot(linspace(1,tb,length(m_dot_f_vect)),R_inj_ox.*m_dot_ox_vect.^2)
-title('Injection Losses')
-legend('FU','OX')
-xlabel('Time [s]')
-ylabel('Pressure Losses [Pa]')
-subplot(2,3,5)
-plot(linspace(1,tb,length(m_dot_f_vect)),R_valves_f.*m_dot_f_vect.^2)
-hold on
-plot(linspace(1,tb,length(m_dot_f_vect)),R_valves_ox.*m_dot_ox_vect.^2)
-title('Velves Losses')
-legend('FU','OX')
-xlabel('Time [s]')
-ylabel('Pressure Losses [Pa]')
-
-% it is clear how the losses which affect the fuel are lower because it's
-% mass flow rate is one order of magnitude lower than the one of the
-% oxidizer
-
+% ct_end = outputs.output.froz.cf_vac(3);
+% T_end = A_t * Pc_vect(end) * ct_end
+% T_1 = A_t * Pc_vect(1) * ct_end;
+% T_2 = A_t * Pc_vect(2) * ct_end;
+% 
+% %% LOSSES PLOTS
+% 
+% subplot(2,3,1)
+% plot(linspace(1,tb,length(m_dot_f_vect)),R_cooling_ox.*m_dot_ox_vect.^2)
+% title('Cooling Losses')
+% legend('OX')
+% xlabel('Time [s]')
+% ylabel('Pressure Losses [Pa]')
+% subplot(2,3,2)
+% plot(linspace(1,tb,length(m_dot_f_vect)),R_feed_f.*m_dot_f_vect.^2)
+% hold on
+% plot(linspace(1,tb,length(m_dot_f_vect)),R_feed_ox.*m_dot_ox_vect.^2)
+% title('Feeding Losses')
+% legend('FU','OX')
+% xlabel('Time [s]')
+% ylabel('Pressure Losses [Pa]')
+% subplot(2,3,3)
+% plot(linspace(1,tb,length(m_dot_f_vect)),R_dyn_f.*m_dot_f_vect.^2)
+% hold on
+% plot(linspace(1,tb,length(m_dot_f_vect)),R_dyn_ox.*m_dot_ox_vect.^2)
+% title('Dynamic Losses')
+% legend('FU','OX')
+% xlabel('Time [s]')
+% ylabel('Pressure Losses [Pa]')
+% subplot(2,3,4)
+% plot(linspace(1,tb,length(m_dot_f_vect)),R_inj_f.*m_dot_f_vect.^2)
+% hold on
+% plot(linspace(1,tb,length(m_dot_f_vect)),R_inj_ox.*m_dot_ox_vect.^2)
+% title('Injection Losses')
+% legend('FU','OX')
+% xlabel('Time [s]')
+% ylabel('Pressure Losses [Pa]')
+% subplot(2,3,5)
+% plot(linspace(1,tb,length(m_dot_f_vect)),R_valves_f.*m_dot_f_vect.^2)
+% hold on
+% plot(linspace(1,tb,length(m_dot_f_vect)),R_valves_ox.*m_dot_ox_vect.^2)
+% title('Velves Losses')
+% legend('FU','OX')
+% xlabel('Time [s]')
+% ylabel('Pressure Losses [Pa]')
+% 
+% % it is clear how the losses which affect the fuel are lower because it's
+% % mass flow rate is one order of magnitude lower than the one of the
+% % oxidizer
+% 
