@@ -111,7 +111,7 @@ f_ox = 0.014;
 [R_feed_ox] = feeding_losses(f_ox, rho_ox, L, d_pipe_ox);
 [R_dyn_f] = dynamic_losses(rho_f, A_f);
 [R_dyn_ox] = dynamic_losses(rho_ox, A_ox); 
-R_tot_f = R_inj_f + R_feed_f + R_dyn_f + R_valves_f + R_cooling_f;
+R_tot_f = R_inj_f + R_feed_f + R_dyn_f
 R_tot_ox = R_inj_ox + R_feed_ox + R_dyn_ox + R_valves_ox + R_cooling_ox;
 
 Pt_in_f = Pc_in + R_tot_f*m_dot_f^2;
@@ -137,9 +137,9 @@ OF_old = OF;
 
 for i = 1:dt:(tb*10)
 
-    P_tank_f_new = Pt_in_f*(V_gas_in_f / (sum( m_dot_f_vect(1:i)).*(dt/10)/rho_f*9.81 + V_gas_in_f ));
+    P_tank_f_new = Pt_in_f*(V_gas_in_f / (sum( m_dot_f_vect(1:i))*(dt/10)/rho_f*9.81 + V_gas_in_f ));
     P_tank_f_vect = [P_tank_f_vect P_tank_f_new];
-    P_tank_ox_new = Pt_in_ox.*(V_gas_in_ox ./ (sum(m_dot_ox_vect(1:i)).*(dt/10)./rho_ox.*9.81 + V_gas_in_ox));
+    P_tank_ox_new = Pt_in_ox*(V_gas_in_ox / (sum(m_dot_ox_vect(1:i))*(dt/10)/rho_ox.*9.81 + V_gas_in_ox));
     P_tank_ox_vect = [P_tank_ox_vect P_tank_ox_new];
 %     [outputs] = CEA('problem','rocket','frozen','o/f',OF_old,'case','CEAM-rocket1',...
 %     'p,Pa',Pc_old,'supsonic(ae/at)',80,'reactants','fuel','RP-1(L)','C',1,...
@@ -149,6 +149,14 @@ for i = 1:dt:(tb*10)
 %     c_star_new = outputs.output.froz.cstar(1);
     Pc_new = m_dot_old*c_star_old/A_t;
     Pc_vect = [Pc_vect Pc_new];
+%     [R_inj_f] = injection_losses(rho_f, A_inj_f, Cd, N_f);
+%     [R_inj_ox] = injection_losses(rho_ox, A_inj_ox, Cd, N_ox);
+%     [R_feed_f] = feeding_losses(f_f, rho_f, L, d_pipe_f);
+%     [R_feed_ox] = feeding_losses(f_ox, rho_ox, L, d_pipe_ox);
+%     [R_dyn_f] = dynamic_losses(rho_f, A_f);
+%     [R_dyn_ox] = dynamic_losses(rho_ox, A_ox);
+%     R_tot_fuel = R_inj_f + R_feed_f + R_dyn_f;
+%     R_tot_oxid = R_inj_ox + R_feed_ox + R_dyn_ox;
     [m_dot_f_new] = mass_flow_rate(P_tank_f_new, Pc_new,  R_tot_f);
     m_dot_f_vect = [m_dot_f_vect m_dot_f_new];
     [m_dot_ox_new] = mass_flow_rate(P_tank_ox_new, Pc_new, R_tot_ox);
