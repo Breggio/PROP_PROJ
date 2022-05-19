@@ -1,0 +1,23 @@
+close all; clearvars; clc;
+set(0,'defaulttextInterpreter','latex'); 
+set(groot,'defaultAxesTickLabelInterpreter','latex'); 
+set(groot,'defaultLegendInterpreter','latex');
+
+%% Thrust Monte Carlo Simulation
+
+%% Constants
+
+%% Variable ranges
+
+% Injection hole diameter oxidizer
+N_d_inj = 10;
+a_d_inj_ox = (9.2114e-04)-0.08e
+d_inj_vec = a + (b-a).*rand(N_inj_vec,1);
+% Throat diameter
+N_d_th = 10;
+d_th_vec = a + (b-a).*rand(N_th_vec,1);
+% Combustion chamber diameter
+N_d_cc = 10;
+d_cc_vec = a + (b-a).*rand(N_d_cc,1);
+
+
