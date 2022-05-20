@@ -1,7 +1,7 @@
-function [outputArg1,outputArg2] = CEA_interpolation(b, a)
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
-A_e = 21.4179e-3; % [m^2]
+clear
+clc
+
+A_e = 2.14179e-3; % [m^2]
 A_t = 2.6772e-5; % [m^2] 
 
 load('CEAmatrix.mat');
@@ -12,11 +12,16 @@ v(:,4) = Pe';
 
 %% Constants
 R = 8.314; % molar gas constant [kJ/(K.kmol)]
-nb_inputs = 5;
+nb_inputs = 7;
+OF_low = 7;
+OF_high = 8.3;
+Pc_low = 20;
+Pc_high = 5;
 
-OF_vect = linspace(6.8, 8, nb_inputs);
-Pc_vect = linspace(20, 10, nb_inputs);
+OF_vect = linspace(OF_low, OF_high, nb_inputs);
+Pc_vect = linspace(Pc_low, Pc_high, nb_inputs);
 
+%% Creating matrices to store the results
 P_c = [Pc_vect; Pc_vect; Pc_vect; Pc_vect; Pc_vect]; % c.c. pressure [bar]
 T = zeros(nb_inputs, nb_inputs); % matrix of temperatures [K]
 M_mol = zeros(nb_inputs, nb_inputs); % matrix of molar masses [kg/kmol]
@@ -25,6 +30,7 @@ C_star = zeros(nb_inputs, nb_inputs); % c* [m/s]
 C_F = zeros(nb_inputs, nb_inputs); % thrust coefficient [-]
 P_e = zeros(nb_inputs, nb_inputs); % exit pressure [bar]
 
+%% Filling matrices
 % T: 2nd column, M_mol: 3rd, P_e: 4th, C_p: 5th
 for i = 1:size(v, 2)
     for j = 1:size(v, 2)
@@ -59,6 +65,13 @@ for i = 1:size(C_star, 1)
     end
 end
 
+%% Interpolation
+[X,Y] = meshgrid(Pc_vect, OF_vect);
 
+xq = linspace(20, 10, 100);
+yq = linspace(6.8, 8, 100);
 
-end
+[Xq,Yq] = meshgrid(xq, yq);
+C_star_int = interp2(X,Y,C_star,Xq,Yq);
+
+C_F_int = interp2(X,Y,C_F,Xq,Yq);
