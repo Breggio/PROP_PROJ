@@ -177,7 +177,7 @@ DP_ox = R_inj_ox*m_dot_ox^2;
 
 %% ITERATIVE PROCESS
 
-dt = 1; %[s]
+dt = 1; %[ms]
 tb = tb*1000; %[s]
 
 Pc_vect = zeros(1,tb*dt);
