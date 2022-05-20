@@ -275,30 +275,31 @@ ylabel('Pressure Losses [Pa]')
 time = [1:1:tb];
 
 %combustion chamber pressure
-figure()
+figure(1)
 plot(time, Pc_vect,'c', 'LineWidth', 2.5)
-legend('Combustion chamber pressure', 'FontSize', 30)
+legend('Combustion chamber pressure','Location','best','FontSize', 30)
 grid on; grid minor
-xlabel('Time [s]', 'FontSize', 30)
-ylabel('Pc [Pa]', 'FontSize', 30)
+xlabel('Time [s]', 'FontSize', 30,'Interpreter','latex')
+ylabel('Pc [Pa]', 'FontSize', 30,'Interpreter','latex')
 
 %thrust
-figure()
+figure(2)
 plot(time, T_vect,'m', 'LineWidth', 2.5)
-legend('Thrust', 'FontSize', 30)
+legend('Thrust', 'Location','best','FontSize', 30)
 grid on; grid minor
-xlabel('Time [s]', 'FontSize', 30)
-ylabel('T [N]', 'FontSize', 30)
+xlabel('Time [s]', 'FontSize', 30,'Interpreter','latex')
+ylabel('T [N]', 'FontSize', 30,'Interpreter','latex')
 
 %specific impulse
 g_0 = 9.81;
 m_dot_vect = m_dot_ox_vect + m_dot_f_vect;
 I_sp_vec = T_vect./ (m_dot_vect.* g_0);
-figure()
-plot(time(2:end), I_sp_vec(2:end), 'g', 'LineWidth', 2.5)
-legend('Specific impulse', 'FontSize', 30)
+
+figure(3)
+plot(time(3:end), I_sp_vec(3:end), 'g', 'LineWidth', 2.5)
+legend('Specific impulse', 'Location','best','FontSize', 30)
 grid on; grid minor
-xlabel('Time [s]', 'FontSize', 30)
+xlabel('Time [s]', 'FontSize', 30,'Interpreter','latex')
 ylabel('$I_{sp} [s]$','FontSize', 30, 'Interpreter', 'latex')
 
 %m_dot
@@ -311,27 +312,27 @@ ylabel('$I_{sp} [s]$','FontSize', 30, 'Interpreter', 'latex')
 % xlabel('$Time [s]$', 'FontSize', 30, 'Interpreter', 'latex')
 % ylabel('$\dot{m} [kg]$','FontSize', 30, 'Interpreter', 'latex')
 
-figure()
+figure(4)
 plot(time, m_dot_ox_vect, 'g', 'LineWidth', 2.5)
-% legend('$\dot{m_{ox}}$', 'FontSize', 30)
+legend('$\dot{m_{ox}}$','Location', 'best' ,'FontSize', 30)
 grid on; grid minor
-xlabel('$Time [s]$', 'FontSize', 30, 'Interpreter', 'latex')
+xlabel('$Time [s]$','FontSize', 30, 'Interpreter','latex')
 ylabel('$\dot{m_{ox}} [kg]$','FontSize', 30, 'Interpreter', 'latex')
 
 %m_fuel
-figure()
-plot(time,  m_dot_f_vect, 'g', 'LineWidth', 2.5)
-% legend('Fuel mass flow rate', 'FontSize', 30)
+figure(5)
+plot(time,  m_dot_f_vect,'g', 'LineWidth', 2.5)
+legend('$\dot{m_{fu}}$' ,'Location' , 'best','FontSize', 30)
 grid on; grid minor
-xlabel('$Time [s]$', 'FontSize', 30)
+xlabel('$Time [s]$','FontSize', 30,'Interpreter', 'latex')
 ylabel('$\dot{m_{f}} [kg]$','FontSize', 30, 'Interpreter', 'latex')
 
 %OF
-figure()
-plot(time,  OF_vect, 'b', 'LineWidth', 2.5)
-legend('$OF$', 'FontSize', 30, 'Interpreter', 'latex')
+figure(6)
+plot(time,  OF_vect,'b', 'LineWidth', 2.5)
+legend('$OF$','Location','best','FontSize', 30, 'Interpreter', 'latex')
 grid on; grid minor
-xlabel('$Time [s]$', 'FontSize', 30)
+xlabel('$Time [s]$', 'FontSize',30,'Interpreter','latex')
 ylabel('$OF [-]$','FontSize', 30, 'Interpreter', 'latex')
 
 %Pressure tank ox and f
