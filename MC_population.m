@@ -14,7 +14,7 @@ rho_ox = 1373; % oxidizer density [kg/m^3]
 %m_dot_f = m_dot - m_dot_ox; % nominal fuel mass flow rate [kg/s]
 
 %% Preparing vectors for the results
-nb_iterations = 15; % number of iterations
+nb_iterations = 100; % number of iterations
 
 Mean_thrust = zeros(1, nb_iterations);
 Cumulative_mean_thrust = zeros(1, nb_iterations);
