@@ -116,8 +116,10 @@ DP_ox = R_inj_ox*m_dot_ox^2; %VERIFICARE CON Delta_P_inj
 
 dt = 1; %[s]
 tb = tb*10; %[s]
-c_star = 1621.9; %DEVONO DARCELO DA CEA???????
-A_t = 2.5450e-5; %[m^2]
+c_star = 1583.7; %DEVONO DARCELO DA CEA???????
+A_t = 2.6772e-5; %[m^2]
+A_e = 0.0021; %[m^2]
+T = 101.7073; %[N]
 
 Pc_vect = zeros(1,tb*dt);
 m_dot_f_vect = zeros(1,tb*dt);
@@ -128,6 +130,7 @@ P_tank_f_vect = zeros(1,tb*dt);
 P_tank_ox_vect = zeros(1,tb*dt);
 sum_m_f = zeros(1,tb*dt);
 sum_m_ox = zeros(1,tb*dt);
+T_vect = zeros(1,tb*dt);
 
 Pc_vect(1) = Pc_in;
 m_dot_f_vect(1) = m_dot_f;
@@ -135,6 +138,7 @@ m_dot_ox_vect(1) = m_dot_ox;
 P_tank_f_vect(1) = Pt_in_f;
 P_tank_ox_vect(1) = Pt_in_ox;
 OF_vect(1) = OF;
+T_vect(1) = T;
 
 options = optimset('Display','off');
 
@@ -146,6 +150,7 @@ for i = 2:dt:tb
 %         'output','thermochemical','end');
 %     c_star(i) = outputs.output.froz.cstar(1);
 
+
     sum_m_f(i-1) = dt*sum(m_dot_f_vect);
     sum_m_ox(i-1) = dt*sum(m_dot_ox_vect);
     fun = @(x)root3d(x, sum_m_f(i-1), sum_m_ox(i-1), R_tot_f, R_tot_ox, Pt_in_f, Pt_in_ox, V_gas_in_f, V_gas_in_ox, rho_f, rho_ox, c_star, A_t, dt);
@@ -154,25 +159,20 @@ for i = 2:dt:tb
     m_dot_f_vect(i) = x(1);
     m_dot_ox_vect(i) = x(2);
     Pc_vect(i) = x(3);
-    i
+    OF_vect(i) = m_dot_ox_vect(i)./m_dot_f_vect(i);
+
+    p_c_star = CEA_int_C_star();
+    c_star = Val_Int_C_star(p_c_star,Pc_vect(i)*1e-5,OF_vect(i));
+    p_ct = CEA_int_C_F(A_e, A_t);
+    ct = Val_Int_C_F(p_ct,Pc_vect(i)*1e-5,OF_vect(i));
+    T_vect(i) = A_t * Pc_vect(i) * ct;
+
+    i;
 
 end
 
 P_tank_f_vect = Pc_vect + R_tot_f.*m_dot_f_vect.^2;
 P_tank_ox_vect = Pc_vect + R_tot_ox.*m_dot_ox_vect.^2;
-OF_vect = m_dot_ox_vect./m_dot_f_vect;
-
-[outputs] = CEA('problem','rocket','frozen','o/f',OF_vect(end),'case','CEAM-rocket1',...
- 'p,Pa',Pc_vect(end),'supsonic(ae/at)',80,'reactants','fuel','RP-1(L)','C',1,...
- 'H',1.95000,'wt%',100,'t(k)',298.0,'oxid','H2O2(L)','wt%',87.5,...
- 't(k)',350,'oxid','H2O(L)','wt%',12.5,'t(k)',350,'output','thermochemical','end');
-% [outputs] = CEA('problem','hp','frozen','o/f',OF_vect(end),'case','CEAM-HP1',...
-%  'p,Pa',Pc_vect(end),'supsonic(ae/at)',80,'reactants','fuel','RP-1(L)',100,'wt%',100,'t(k)',...
-%  298.0,'oxid','H2O2(L)','wt%',87.5,'t(k)',350,'oxid','H2O(L)','wt%',12.5,'t(k)',350,'output','transport','end','screen');
-
-ct_end = outputs.output.froz.cf_vac(3);
-T_end = A_t * Pc_vect(end) * ct_end
-
 
 %% LOSSES PLOTS
 
