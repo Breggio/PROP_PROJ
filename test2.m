@@ -22,7 +22,7 @@ OF_vect = linspace(OF_low, OF_high, nb_inputs);
 Pc_vect = linspace(Pc_low, Pc_high, nb_inputs);
 
 %% Creating matrices to store the results
-P_c = [Pc_vect; Pc_vect; Pc_vect; Pc_vect; Pc_vect]; % c.c. pressure [bar]
+P_c = repmat(Pc_vect, nb_inputs); % c.c. pressure [bar]
 T = zeros(nb_inputs, nb_inputs); % matrix of temperatures [K]
 M_mol = zeros(nb_inputs, nb_inputs); % matrix of molar masses [kg/kmol]
 C_p = zeros(nb_inputs, nb_inputs); % matrix of specific heat capacities [kJ/(kg.K)]
@@ -32,9 +32,9 @@ P_e = zeros(nb_inputs, nb_inputs); % exit pressure [bar]
 
 %% Filling matrices
 % T: 2nd column, M_mol: 3rd, P_e: 4th, C_p: 5th
-for i = 1:size(v, 2)
-    for j = 1:size(v, 2)
-        index = 5*(i-1)+j;
+for i = 1:nb_inputs
+    for j = 1:nb_inputs
+        index = nb_inputs*(i-1)+j;
         T(i,j) = v(index,2);
         M_mol(i,j) = v(index,3);
         P_e(i,j) = v(index, 4);
@@ -68,10 +68,6 @@ end
 %% Interpolation
 [X,Y] = meshgrid(Pc_vect, OF_vect);
 
-xq = linspace(20, 10, 100);
-yq = linspace(6.8, 8, 100);
+p = polyFit2D(C_F,X,Y,2,2);
 
-[Xq,Yq] = meshgrid(xq, yq);
-C_star_int = interp2(X,Y,C_star,Xq,Yq);
-
-C_F_int = interp2(X,Y,C_F,Xq,Yq);
+c_F = polyVal2D(p,20,7.8,2,2);
