@@ -1,6 +1,6 @@
 function T = calculate_thrust(d_inj_ox, d_inj_f, A_th, Pc, Cd, rho_ox, rho_f, A_e)
 
-Delta_P_inj = 0.25*Pc;
+Delta_P_inj = 0.2*Pc;
 
 A_inj_ox = (pi*d_inj_ox^2)/4;
 A_inj_f = (pi*d_inj_f^2)/4;
