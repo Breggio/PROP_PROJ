@@ -18,7 +18,9 @@ Re_mod = sqrt(r_t/r_c)*Re_t;
 D_pipe_ox = 10e-3; %m
 D_pipe_fu = 5e-3; %m
 rho_fu = 810; %kg/m3
-mu_fu = 1.7e-3; %pa*s
+mu_fu = 1.40e-3; %pa*s
+
+
 rho_ox = 1373; %kg/m3 
 mu_ox = 1.26e-3; %pa*s 
 v_fu = 0.2507;  %m/s

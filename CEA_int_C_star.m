@@ -65,7 +65,6 @@ for i = 1:size(C_star, 1)
         R_specific = R/m_mol;  % specific gas constant [J/(kg.K)]
         gamma = Gamma(i,j);
         c_star = sqrt(gamma*R_specific*t)*1/(gamma*sqrt((2/(gamma+1))^((gamma+1)/(gamma-1))));
-        display(c_star)
         C_star(i,j) = c_star;
     end
 end

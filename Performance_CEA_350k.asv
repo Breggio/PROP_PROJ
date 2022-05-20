@@ -16,7 +16,7 @@ beta = 45*pi/180;
 alpha = 15*pi/180;
 lambda = (1+cos(alpha))/2; % coff of losses 
 T2D = lambda * T; 
-T_new = T + T*(1-lambda)
+T_new = T*(1-lambda)
 % Set CEA parameters
 OF = 7.2; % from CEA and literature
 Cp_1 = 2.5322; % [kJ/KgK] from CEA
@@ -37,12 +37,12 @@ v_sonic_e = 609.1; % [m/s]
 u_e = Mach_e * v_sonic_e; % exit velocity [m/s]
 
 % Chamber design
-A_t = T_new/(Pc*C_f2); % m 
+A_t = T_m/(Pc*C_f2); % m 
 A_t_cm = A_t*1e4;
 D_t_cm = 2*sqrt(A_t_cm/pi);
 A_e = A_t*eps; % m
-% m_dot2 = Pc*A_t/c_star;
-m_dot = (T_new-Pe*A_e)/u_e;
+m_dot2 = Pc*A_t/c_star;
+m_dot = (T-Pe*A_e)/u_e;
 m_ox = (OF/(1+OF)) * m_dot;
 m_fu = m_dot - m_ox;
 A_e_cm = A_e*10^4;
@@ -59,7 +59,7 @@ contract_ratio = A_cc_cm / A_t_cm
 beta = 45*pi/180;
 alpha = 15*pi/180;
 lambda = (1+cos(alpha))/2; % coff of losses 
-T2D = lambda * T_new; 
+T2D = lambda * T; 
 L_DIV = 0.5*(D_e_cm-D_t_cm)/tan(alpha); % cm
 L_CON = 0.5*(D_cc_cm-D_t_cm)/tan(beta); % cm
 L_tot_nozzle = L_CON + L_DIV; % cm
