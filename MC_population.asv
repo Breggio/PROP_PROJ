@@ -24,7 +24,7 @@ Cumulative_standard_deviation_thrust = zeros(1, nb_iterations);
 %% 1) Parameters
 nb_samples = 5; % number of samples
 
-nom_d_inj_ox = 8.7116e-04; % nominal value of oxidizer injector diameter [m]
+nom_d_inj_ox = 8.e-04; % nominal value of oxidizer injector diameter [m]
 nom_d_inj_f = 5.2389e-04; % nominal value of fuel injector diameter [m]
 tol_d_inj = 0.08e-03; % tolerance on injector diameter [m]
 nom_A_th = 2.5450e-05; % nominal value of throat area [m^2]
