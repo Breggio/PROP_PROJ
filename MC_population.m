@@ -5,16 +5,16 @@ clc
 %% Constants
 P_c = 20E5; % nominal combustion chamber pressure [Pa]
 C_d = 0.65; % nominal discharge coefficient [-]
-OF = 7.2; % nominal oxidizer to fuel ratio [-]
+%OF = 7.2; % nominal oxidizer to fuel ratio [-]
 rho_f = 810; % fuel density [kg/m^3]
 rho_ox = 1373; % oxidizer density [kg/m^3]
 
-m_dot = 0.0327; % propellant mass flow rate [kg/s]
-m_dot_ox = (OF/(1+OF))*m_dot; % nominal oxidizer mass flow rate [kg/s]
-m_dot_f = m_dot - m_dot_ox; % nominal fuel mass flow rate [kg/s]
+%m_dot = 0.0327; % propellant mass flow rate [kg/s]
+%m_dot_ox = (OF/(1+OF))*m_dot; % nominal oxidizer mass flow rate [kg/s]
+%m_dot_f = m_dot - m_dot_ox; % nominal fuel mass flow rate [kg/s]
 
 %% Preparing vectors for the results
-nb_iterations = 10; % number of iterations
+nb_iterations = 15; % number of iterations
 
 Mean_thrust = zeros(1, nb_iterations);
 Cumulative_mean_thrust = zeros(1, nb_iterations);
@@ -32,7 +32,6 @@ tol_A_th = (10e-06)^2; % tolerance on throat area [m^2]
 
 %% STARTING LOOP OF ITERATIONS
 for it = 1:nb_iterations
-sprintf('Iteration n°%d', it)
 
 %% 2) Define the population
 % Injection hole diameter oxidizer
@@ -91,9 +90,8 @@ for i = 1:length(Triplets_shuffled)
         d_ox = triplet(1);
         d_f = triplet(2);
         a_th = triplet(3);
-        thrust = calculate_thrust(d_ox, d_f, a_th, P_c, OF, C_d, rho_ox, rho_f, m_dot_ox, m_dot_f);
+        thrust = calculate_thrust(d_ox, d_f, a_th, P_c, C_d, rho_ox, rho_f);
         Thrust(k) = thrust;
-        sprintf('Couple n°%d', k)
         k = k+1;
     end
 end

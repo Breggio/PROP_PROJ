@@ -1,7 +1,6 @@
-close all; clearvars; clc;
-set(0,'defaulttextInterpreter','latex'); 
-set(groot,'defaultAxesTickLabelInterpreter','latex'); 
-set(groot,'defaultLegendInterpreter','latex');
+close all
+clear
+clc
 
 %% Constants
 P_c = 20E5; % nominal combustion chamber pressure [Pa]
@@ -11,11 +10,11 @@ rho_f = 810; % fuel density [kg/m^3]
 rho_ox = 1373; % oxidizer density [kg/m^3]
 
 m_dot = 0.0327; % propellant mass flow rate [kg/s]
-m_dot_ox = (OF/(1 + OF))*m_dot; % [kg/s] Oxidizer mass flow rate
-m_dot_f = m_dot - m_dot_ox; % [kg/s] Fuel mass flow rate
+m_dot_ox = (OF/(1+OF))*m_dot; % nominal oxidizer mass flow rate [kg/s]
+m_dot_f = m_dot - m_dot_ox; % nominal fuel mass flow rate [kg/s]
 
 %% 1) Parameters
-nb_samples = 10; % number of samples
+nb_samples = 5; % number of samples
 
 nom_d_inj_ox = 9.2114e-04; % nominal value of oxidizer injector diameter [m]
 nom_d_inj_f = 5.5395e-04; % nominal value of fuel injector diameter [m]
@@ -27,17 +26,17 @@ tol_A_th = (10e-06)^2; % tolerance on throat area [m^2]
 % Injection hole diameter oxidizer
 a_d_inj_ox = nom_d_inj_ox - tol_d_inj;
 b_d_inj_ox = nom_d_inj_ox + tol_d_inj;
-D_ox_vec = (b_d_inj_ox-a_d_inj_ox).*rand(nb_samples,1) + a_d_inj_ox;
+D_ox_vec = (b_d_inj_ox-a_d_inj_ox).*rand(1,nb_samples) + a_d_inj_ox;
 
 % Injection hole diameter fuel
 a_d_inj_f = nom_d_inj_f - tol_d_inj;
 b_d_inj_f = nom_d_inj_f + tol_d_inj;
-D_f_vec = (b_d_inj_f-a_d_inj_f).*rand(nb_samples,1) + a_d_inj_f;
+D_f_vec = (b_d_inj_f-a_d_inj_f).*rand(1,nb_samples) + a_d_inj_f;
 
 % Throat diameter
 a_A_th = nom_A_th - tol_A_th;
 b_A_th = nom_A_th + tol_A_th;
-A_th_vec = a_A_th + (b_A_th-a_A_th).*rand(nb_samples,1);
+A_th_vec = a_A_th + (b_A_th-a_A_th).*rand(1,nb_samples);
 
 %% 3) INitialize the thrust matrix
 [T_array] = deal(zeros(nb_samples, nb_samples, nb_samples));
@@ -52,7 +51,7 @@ for i = 1 : nb_samples
             d_inj_ox = D_ox_vec(i);
             d_inj_f = D_f_vec(j);
             A_th = A_th_vec(k);
-            T = calculate_thrust(d_inj_ox, d_inj_f, A_th, P_c, C_d, rho_ox, rho_f);
+            T = calculate_thrust(d_inj_ox, d_inj_f, A_th, Pc_old, OF, Cd, rho_ox, rho_f, m_dot_ox, m_dot_f)
             T_array(i,j,k) = T;
         end
     end
@@ -96,16 +95,16 @@ colormap turbo
 %%
 
 % Maximum value
-thrust_max = max(max(max(T_array./1e3)))
+distance_max = max(max(max(max_diff_array./1e3)))
 
 % Minimum value 
-thrust_min = min(min(min(T_array./1e3)))
+distance_min = min(min(min(max_diff_array./1e3)))
 
 % Mean
-thrust_mean = mean(T_array./1e3,'all')
+distance_mean = mean(max_diff_array./1e3,'all')
 
 % Standard deviation
-thrust_std = std(T_array./1e3,0,'all')
+distance_std = std(max_diff_array./1e3,0,'all')
 
 
 
