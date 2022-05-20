@@ -222,8 +222,6 @@ for i = 2:dt:tb
 
     T_vect(i) = A_t * Pc_vect(i) * ct;
 
-    i
-
 end
 
 P_tank_f_vect = Pc_vect + R_tot_f.*m_dot_f_vect.^2;
