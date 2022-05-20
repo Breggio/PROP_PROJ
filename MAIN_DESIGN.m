@@ -328,7 +328,7 @@ ylabel('$\dot{m_{f}} [kg]$','FontSize', 30, 'Interpreter', 'latex')
 
 %OF
 figure()
-plot(time,  OF_vect, 'g', 'LineWidth', 2.5)
+plot(time,  OF_vect, 'b', 'LineWidth', 2.5)
 legend('$OF$', 'FontSize', 30, 'Interpreter', 'latex')
 grid on; grid minor
 xlabel('$Time [s]$', 'FontSize', 30)
