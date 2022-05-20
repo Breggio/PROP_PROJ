@@ -43,7 +43,7 @@ m_fu = m_dot - m_ox;
 A_e_cm = A_e*10^4;
 D_e_cm = 2*sqrt(A_e_cm/pi);
 %m_dot = (T-Pe*A_e)/v_exit;
-Mach_cc = 0.1; % assumed b/w 0.2 and 0.4
+Mach_cc = 0.075; % assumed b/w 0.2 and 0.4
 A_cc_cm = (A_t/Mach_cc*((2/(k+1)) * (1+((k-1)/2*Mach_cc^2)))^((k+1)/2/(k-1)))*1e4;
 D_cc_cm = 2*sqrt(A_cc_cm/pi);
 L_star = 178*1.1; % [cm]
@@ -58,4 +58,4 @@ L_DIV = 0.5*(D_e_cm-D_t_cm)/tan(alpha); % cm
 L_CON = 0.5*(D_cc_cm-D_t_cm)/tan(beta); % cm
 L_tot_nozzle = L_CON + L_DIV; % cm
 
-
+L_engine = L_cc + L_tot_nozzle

@@ -15,13 +15,13 @@ Re_mod = sqrt(r_t/r_c)*Re_t;
 
 %% feeding line 
 
-D_pipe = 5+1e-3; %mm
+D_pipe_ox = 10e-3; %m
 rho_fu = 810; %kg/m3
 mu_fu = 1.7e-3; %pa*s
 rho_ox = 1373; %kg/m3 
 mu_ox = 1.249e-3; %pa*s 
-v_fu = 0.2808;  %m/s
+v_fu = 0.2663;  %m/s
 v_ox = 0.9920;  %m/s
 
-Re_ox = (rho_ox * D_pipe * v_ox)/mu_ox
-Re_fu = (rho_fu * D_pipe * v_fu)/mu_fu
+Re_ox = (rho_ox * D_pipe_ox * v_ox)/mu_ox
+Re_fu = (rho_fu * D_pipe_ox * v_fu)/mu_fu
