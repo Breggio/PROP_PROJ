@@ -180,4 +180,3 @@ yline([Int_cm_inf Int_cm_sup], '--', {'Lower bound','Upper bound'}, 'LineWidth',
 
 subplot(1,2,2);
 yline([Int_sd_inf Int_sd_sup], '--', {'Lower bound','Upper bound'}, 'LineWidth', 1, 'color', '#D95319');
-
