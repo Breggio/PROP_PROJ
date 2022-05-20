@@ -31,26 +31,27 @@ Cp_1 = 2.5322; % [kJ/KgK] from CEA
 T_cc = 2699.21; % [K] from CEA
 Mmol = 21.506; % [kg/kmol]
 Cp = Cp_1*Mmol; % [kJ/kmolK]
-C_f = 1.8676; % [-]
+% C_f = 1.8676; % [-]
 Is2 = 3056.5; % [m/s]
 Pe = 0.01559*10^5; % [Pascal]
-c_star = 1583.7; % [m/s]
+% c_star = 1583.7; % [m/s]
 Pe2Pc = Pe/Pc;
 Is = Is2/g0; % [s]
 % Output
-Cv = Cp - R; % Mayer's relation
+Cv = Cp - R; % Mayer's relation [kJ/kmolK]
 k = Cp/Cv; % definition of gamma/k, and also from CEA
 Mach_e = 4.856; % from CEA
 v_sonic_e = 609.1; % [m/s]
 u_e = Mach_e * v_sonic_e; % exit velocity [m/s]
+C_f = sqrt(2*(k^2/(k-1))*(2/(k+1))^((k+1)/(k-1)))*sqrt(1-(Pe2Pc)^((k-1)/k))+eps*Pe2Pc;
+c_star = sqrt(k*(R*1e3/Mmol)*T_cc)*1/(k*sqrt((2/(k+1))^((k+1)/(k-1))));
 
 % Chamber design
 A_t = T/(Pc*C_f); % m 
 A_t_cm = A_t*1e4;
 D_t_cm = 2*sqrt(A_t_cm/pi);
 A_e = A_t*eps; % m
-m_dot2 = Pc*A_t/c_star;
-m_dot = (T-Pe*A_e)/u_e;
+m_dot = Pc*A_t/c_star;
 m_dot_ox = (OF/(1+OF)) * m_dot;
 m_dot_f = m_dot - m_dot_ox;
 A_e_cm = A_e*10^4;
@@ -177,7 +178,7 @@ DP_ox = R_inj_ox*m_dot_ox^2;
 %% ITERATIVE PROCESS
 
 dt = 1; %[s]
-tb = tb*10; %[s]
+tb = tb*100; %[s]
 
 Pc_vect = zeros(1,tb*dt);
 m_dot_f_vect = zeros(1,tb*dt);
@@ -224,6 +225,12 @@ end
 
 P_tank_f_vect = Pc_vect + R_tot_f.*m_dot_f_vect.^2;
 P_tank_ox_vect = Pc_vect + R_tot_ox.*m_dot_ox_vect.^2;
+
+% p_c_star = CEA_int_C_star();
+%     c_star_new = Val_Int_C_star(p_c_star,Pc*1e-5,OF)
+%     p_ct = CEA_int_C_F(A_e, A_t);
+%     ct_new = Val_Int_C_F(p_ct,Pc*1e-5,OF)
+
 
 %% LOSSES PLOTS
 

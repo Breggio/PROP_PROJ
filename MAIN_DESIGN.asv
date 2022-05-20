@@ -31,10 +31,10 @@ Cp_1 = 2.5322; % [kJ/KgK] from CEA
 T_cc = 2699.21; % [K] from CEA
 Mmol = 21.506; % [kg/kmol]
 Cp = Cp_1*Mmol; % [kJ/kmolK]
-C_f = 1.8676; % [-]
+% C_f = 1.8676; % [-]
 Is2 = 3056.5; % [m/s]
 Pe = 0.01559*10^5; % [Pascal]
-c_star = 1583.7; % [m/s]
+% c_star = 1583.7; % [m/s]
 Pe2Pc = Pe/Pc;
 Is = Is2/g0; % [s]
 % Output
@@ -43,6 +43,10 @@ k = Cp/Cv; % definition of gamma/k, and also from CEA
 Mach_e = 4.856; % from CEA
 v_sonic_e = 609.1; % [m/s]
 u_e = Mach_e * v_sonic_e; % exit velocity [m/s]
+C_f = sqrt(2*(k^2/(k-1))*(2/(k+1))^((k+1)/(k-1)))*sqrt(1-(Pe2Pc)^((k-1)/k))+eps*Pe2Pc
+Rspecific = R/(Mmol*1e-3);
+gamma = k;
+c_star = sqrt(gamma*R_specific*t)*1/(gamma*sqrt((2/(gamma+1))^((gamma+1)/(gamma-1))))
 
 % Chamber design
 A_t = T/(Pc*C_f); % m 
@@ -77,15 +81,6 @@ L_engine = L_cc + L_tot_nozzle;
 
 % CHARACTERIZATION OF THE NOMINAL CONDITION: INITAL ONE
 % AND SIZING OF THE ENGINE TANKS AND ORIFICES USING THE NOMINAL PARAMETERS
-
-% OF = 7.2; % O/F ratio - from previous computations
-
-% m_dot = 0.0327; % [kg/s] Propellants mass flow ratio - from previous calculations
-
-% m_dot_ox = (OF/(1 + OF))*m_dot; % [kg/s] Oxidizer mass flow rate
-% m_dot_f = m_dot - m_dot_ox; % [kg/s] Fuel mass flow rate
-
-% Pc = 20*1e5; % [Pa] Initial combustion chamber pressure
 
 rho_f = 810; % [kg/m^3] fuel density
 rho_ox = 1373; % [kg/m^3] oxidizer density
@@ -160,20 +155,16 @@ mu_ox = 1.26e-3; %pa*s
 mu_f = 1.40e-3; %pa*s
 Re_ox = (rho_ox * d_pipe_ox * u_ox_pipe)/mu_ox;
 Re_f = (rho_f * d_pipe_f * u_f_pipe)/mu_f; 
-% Re_f_numero = 725.24;
-% Re_ox_numero = 2.9018*1e3;
-% f_f = 0.088;
 f_f = 64/Re_f; % FOR LAMINAR FLOW
 f_ox = 0.045; % FROM CHART
 
 %% LOSSES CORRETTO
 
-% [R_cooling_f] = cooling_losses(f_f, d_pipe_f, L, rho_f, A_pipe_f); 
 [R_cooling_ox] = cooling_losses(f_ox, d_pipe_ox, L_cool, rho_ox, A_pipe_ox);
 [R_valves_f] = control_valve_pressure_loss(rho_f);
 [R_valves_ox] = control_valve_pressure_loss(rho_ox);
-[R_inj_f] = injection_losses(rho_f, A_inj_f, Cd, N_f); %DA VERIFICARE CORRETTEZZA EQUAZIONE SBAGLIATA per MAGGI
-[R_inj_ox] = injection_losses(rho_ox, A_inj_ox, Cd, N_ox); %DA VERIFICARE CORRETTEZZA EQUAZIONE SBAGLIATA per MAGGI
+[R_inj_f] = injection_losses(rho_f, A_inj_f, Cd, N_f); 
+[R_inj_ox] = injection_losses(rho_ox, A_inj_ox, Cd, N_ox); 
 [R_feed_f] = feeding_losses(f_f, rho_f, L_pipes, d_pipe_f);
 [R_feed_ox] = feeding_losses(f_ox, rho_ox, L_pipes, d_pipe_ox);
 [R_dyn_f] = dynamic_losses(rho_f, A_f);
@@ -184,25 +175,19 @@ R_tot_ox = R_inj_ox + R_feed_ox + R_dyn_ox + R_valves_ox + R_cooling_ox;
 Pt_in_f = Pc + R_tot_f*m_dot_f^2;
 Pt_in_ox = Pc + R_tot_ox*m_dot_ox^2;
 
-DP_f = R_inj_f*m_dot_f^2; % VERIFICARE CON Delta_P_inj
-DP_ox = R_inj_ox*m_dot_ox^2; %VERIFICARE CON Delta_P_inj
+DP_f = R_inj_f*m_dot_f^2; 
+DP_ox = R_inj_ox*m_dot_ox^2; 
 
 %% ITERATIVE PROCESS
 
 dt = 1; %[s]
 tb = tb*10; %[s]
-% c_star = 1583.7; %DEVONO DARCELO DA CEA???????
-% A_t = 2.6772e-5; %[m^2]
-% A_e = 0.0021; %[m^2]
-% T = 101.7073; %[N]
 
 Pc_vect = zeros(1,tb*dt);
 m_dot_f_vect = zeros(1,tb*dt);
 m_dot_ox_vect = zeros(1,tb*dt);
 m_dot_vect = zeros(1,tb*dt);
 OF_vect = zeros(1,tb*dt);
-P_tank_f_vect = zeros(1,tb*dt);
-P_tank_ox_vect = zeros(1,tb*dt);
 sum_m_f = zeros(1,tb*dt);
 sum_m_ox = zeros(1,tb*dt);
 T_vect = zeros(1,tb*dt);
@@ -210,8 +195,6 @@ T_vect = zeros(1,tb*dt);
 Pc_vect(1) = Pc;
 m_dot_f_vect(1) = m_dot_f;
 m_dot_ox_vect(1) = m_dot_ox;
-P_tank_f_vect(1) = Pt_in_f;
-P_tank_ox_vect(1) = Pt_in_ox;
 OF_vect(1) = OF;
 T_vect(1) = T;
 
@@ -245,6 +228,12 @@ end
 
 P_tank_f_vect = Pc_vect + R_tot_f.*m_dot_f_vect.^2;
 P_tank_ox_vect = Pc_vect + R_tot_ox.*m_dot_ox_vect.^2;
+
+p_c_star = CEA_int_C_star();
+    c_star_new = Val_Int_C_star(p_c_star,Pc*1e-5,OF)
+    p_ct = CEA_int_C_F(A_e, A_t);
+    ct_new = Val_Int_C_F(p_ct,Pc*1e-5,OF)
+
 
 %% LOSSES PLOTS
 
