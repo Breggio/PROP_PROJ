@@ -15,7 +15,7 @@ A_e = 0.002071; % nozzle exit area [m^2]
 %m_dot_f = m_dot - m_dot_ox; % nominal fuel mass flow rate [kg/s]
 
 %% Preparing vectors for the results
-nb_iterations = 10; % number of iterations
+nb_iterations = 200; % number of iterations
 
 Mean_thrust = zeros(1, nb_iterations);
 Cumulative_mean_thrust = zeros(1, nb_iterations);
@@ -23,7 +23,7 @@ Standard_deviation_thrust = zeros(1, nb_iterations);
 Cumulative_standard_deviation_thrust = zeros(1, nb_iterations);
 
 %% 1) Parameters
-nb_samples = 5; % number of samples
+nb_samples = 50; % number of samples
 
 nom_d_inj_ox = 8.8721e-04; % nominal value of oxidizer injector diameter [m]
 nom_d_inj_f = 5.3355e-04; % nominal value of fuel injector diameter [m]
@@ -86,6 +86,7 @@ Thrust = zeros(1, nb_samples*nb_samples*nb_samples);
 
 k = 1;
 for i = 1:length(Triplets_shuffled)
+    disp(i)
     if mod(i,3) == 1 % selecting only odd indexes
         triplet = Triplets_shuffled(i:i+2);
         d_ox = triplet(1);
@@ -114,7 +115,7 @@ figure(1);
 
 % Plotting cumulative mean
 subplot(1,2,1);
-plot(Cumulative_mean_thrust, 'LineWidth', 1.5);
+plot(Cumulative_mean_thrust, 'LineWidth', 1.5, 'Fontsize', 21);
 hold on
 grid on
 xlabel('Monte Carlo iterations', 'Interpreter', 'latex');
@@ -123,7 +124,7 @@ title('\textbf{Cumulative mean of thurst}', 'Interpreter', 'latex');
 
 % Plotting cumulative standard deviation
 subplot(1,2,2);
-plot(Cumulative_standard_deviation_thrust, 'LineWidth', 1.5);
+plot(Cumulative_standard_deviation_thrust, 'LineWidth', 1.5, 'Fontsize', 21);
 hold on
 grid on
 xlabel('Monte Carlo iterations', 'Interpreter', 'latex');
