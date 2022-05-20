@@ -178,7 +178,7 @@ DP_ox = R_inj_ox*m_dot_ox^2;
 %% ITERATIVE PROCESS
 
 dt = 1; %[s]
-tb = tb*100; %[s]
+tb = tb*1000; %[s]
 
 Pc_vect = zeros(1,tb*dt);
 m_dot_f_vect = zeros(1,tb*dt);
@@ -223,11 +223,6 @@ end
 
 P_tank_f_vect = Pc_vect + R_tot_f.*m_dot_f_vect.^2;
 P_tank_ox_vect = Pc_vect + R_tot_ox.*m_dot_ox_vect.^2;
-
-% p_c_star = CEA_int_C_star();
-%     c_star_new = Val_Int_C_star(p_c_star,Pc*1e-5,OF)
-%     p_ct = CEA_int_C_F(A_e, A_t);
-%     ct_new = Val_Int_C_F(p_ct,Pc*1e-5,OF)
 
 
 %% LOSSES PLOTS
