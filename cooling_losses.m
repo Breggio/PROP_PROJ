@@ -18,7 +18,7 @@ function [R_cooling] = cooling_losses(f_D, d_h, L, rho, A)
 %
 % OUTPUT:
 %  R_cooling    Resistance coefficient for propellant flow path
-%               [Pa/(kg^2/s^2)]
+%               [(Pa*s^2)/kg^2]
 %
 % CONTRIBUTORS:
 %   Léonie DEU
@@ -26,8 +26,7 @@ function [R_cooling] = cooling_losses(f_D, d_h, L, rho, A)
 % VERSIONS
 %   2022-05-17:     First version
 
-% R_cooling = 0.5*f_D/d_h*L/(rho*A^2); % CHECK
-R_cooling = ((0.5*f_D)/d_h)*(L/(rho*A^2)); % CHECK
+ R_cooling = f_D*L/(2*d_h*rho*A^2);
 
 
 end

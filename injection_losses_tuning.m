@@ -22,9 +22,9 @@ function [R_inj] = injection_losses(rho, A_inj, C_d, N)
 % VERSIONS
 %   2022-05-17:     First version
 
-A_tot = A_inj * N; 
+% A_tot = A_inj * N; 
 
-R_inj = (8/rho)*(1/(A_inj*C_d)^2);
+R_inj = (1/2*rho)*(1/(A_inj*C_d)^2);
 R_inj = 1/(R_inj *N);
 
 % if R_inj > 0.3*P_c
