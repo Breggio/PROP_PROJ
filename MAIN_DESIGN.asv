@@ -38,23 +38,20 @@ Pe = 0.01559*10^5; % [Pascal]
 Pe2Pc = Pe/Pc;
 Is = Is2/g0; % [s]
 % Output
-Cv = Cp - R; % Mayer's relation
+Cv = Cp - R; % Mayer's relation [kJ/kmolK]
 k = Cp/Cv; % definition of gamma/k, and also from CEA
 Mach_e = 4.856; % from CEA
 v_sonic_e = 609.1; % [m/s]
 u_e = Mach_e * v_sonic_e; % exit velocity [m/s]
-C_f = sqrt(2*(k^2/(k-1))*(2/(k+1))^((k+1)/(k-1)))*sqrt(1-(Pe2Pc)^((k-1)/k))+eps*Pe2Pc
-Rspecific = R/(Mmol*1e-3);
-gamma = k;
-c_star = sqrt(gamma*R_specific*t)*1/(gamma*sqrt((2/(gamma+1))^((gamma+1)/(gamma-1))))
+C_f = sqrt(2*(k^2/(k-1))*(2/(k+1))^((k+1)/(k-1)))*sqrt(1-(Pe2Pc)^((k-1)/k))+eps*Pe2Pc;
+c_star = sqrt(k*(R*1e3/Mmol)*T_cc)*1/(k*sqrt((2/(k+1))^((k+1)/(k-1))));
 
 % Chamber design
 A_t = T/(Pc*C_f); % m 
 A_t_cm = A_t*1e4;
 D_t_cm = 2*sqrt(A_t_cm/pi);
 A_e = A_t*eps; % m
-m_dot2 = Pc*A_t/c_star;
-m_dot = (T-Pe*A_e)/u_e;
+m_dot = Pc*A_t/c_star;
 m_dot_ox = (OF/(1+OF)) * m_dot;
 m_dot_f = m_dot - m_dot_ox;
 A_e_cm = A_e*10^4;
@@ -181,7 +178,7 @@ DP_ox = R_inj_ox*m_dot_ox^2;
 %% ITERATIVE PROCESS
 
 dt = 1; %[s]
-tb = tb*10; %[s]
+tb = tb*1000; %[s]
 
 Pc_vect = zeros(1,tb*dt);
 m_dot_f_vect = zeros(1,tb*dt);
@@ -226,11 +223,6 @@ end
 
 P_tank_f_vect = Pc_vect + R_tot_f.*m_dot_f_vect.^2;
 P_tank_ox_vect = Pc_vect + R_tot_ox.*m_dot_ox_vect.^2;
-
-p_c_star = CEA_int_C_star();
-    c_star_new = Val_Int_C_star(p_c_star,Pc*1e-5,OF)
-    p_ct = CEA_int_C_F(A_e, A_t);
-    ct_new = Val_Int_C_F(p_ct,Pc*1e-5,OF)
 
 
 %% LOSSES PLOTS
@@ -278,4 +270,76 @@ ylabel('Pressure Losses [Pa]')
 % mass flow rate is one order of magnitude lower than the one of the
 % oxidizer
 
+%% PLOT
 
+time = [1:1:tb];
+
+%combustion chamber pressure
+figure()
+plot(time, Pc_vect,'c', 'LineWidth', 2.5)
+legend('Combustion chamber pressure', 'FontSize', 30)
+grid on; grid minor
+xlabel('Time [s]', 'FontSize', 30)
+ylabel('Pc [Pa]', 'FontSize', 30)
+
+%thrust
+figure()
+plot(time, T_vect,'m', 'LineWidth', 2.5)
+legend('Thrust', 'FontSize', 30)
+grid on; grid minor
+xlabel('Time [s]', 'FontSize', 30)
+ylabel('T [N]', 'FontSize', 30)
+
+%specific impulse
+g_0 = 9.81;
+m_dot_vect = m_dot_ox_vect + m_dot_f_vect;
+I_sp_vec = T_vect./ (m_dot_vect.* g_0);
+figure()
+plot(time, I_sp_vec, 'g', 'LineWidth', 2.5)
+legend('Specific impulse', 'FontSize', 30)
+grid on; grid minor
+xlabel('Time [s]', 'FontSize', 30)
+ylabel('$I_{sp} [s]$','FontSize', 30, 'Interpreter', 'latex')
+
+%m_dot
+% figure()
+% plot(time, m_dot_ox_vect, 'g', 'LineWidth', 2.5)
+% hold on 
+% plot(time,  m_dot_f_vect, 'k', 'LineWidth', 2.5)
+% legend('$\dot{m_{ox}}$', '$\dot{m_{f}}$', 'FontSize', 30)
+% grid on; grid minor
+% xlabel('$Time [s]$', 'FontSize', 30, 'Interpreter', 'latex')
+% ylabel('$\dot{m} [kg]$','FontSize', 30, 'Interpreter', 'latex')
+
+figure()
+plot(time, m_dot_ox_vect, 'g', 'LineWidth', 2.5)
+% legend('$\dot{m_{ox}}$', 'FontSize', 30)
+grid on; grid minor
+xlabel('$Time [s]$', 'FontSize', 30, 'Interpreter', 'latex')
+ylabel('$\dot{m_{ox}} [kg]$','FontSize', 30, 'Interpreter', 'latex')
+
+%m_fuel
+figure()
+plot(time,  m_dot_f_vect, 'g', 'LineWidth', 2.5)
+% legend('Fuel mass flow rate', 'FontSize', 30)
+grid on; grid minor
+xlabel('$Time [s]$', 'FontSize', 30)
+ylabel('$\dot{m_{f}} [kg]$','FontSize', 30, 'Interpreter', 'latex')
+
+%OF
+figure()
+plot(time,  OF_vect, 'g', 'LineWidth', 2.5)
+legend('$OF$', 'FontSize', 30, 'Interpreter', 'latex')
+grid on; grid minor
+xlabel('$Time [s]$', 'FontSize', 30)
+ylabel('$OF [-]$','FontSize', 30, 'Interpreter', 'latex')
+
+%Pressure tank ox and f
+figure()
+plot(time, P_tank_ox_vect, 'k', 'LineWidth', 2.5)
+hold on
+plot(time, P_tank_f_vect, 'c', 'LineWidth', 2.5)
+legend('$P_{t,ox}$','$P_{t,f}$', 'FontSize', 30, 'Interpreter', 'latex')
+grid on; grid minor
+xlabel('$Time [s]$', 'FontSize', 30)
+ylabel('$Pressure [Pa]$','FontSize', 30, 'Interpreter', 'latex')

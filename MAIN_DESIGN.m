@@ -270,4 +270,76 @@ ylabel('Pressure Losses [Pa]')
 % mass flow rate is one order of magnitude lower than the one of the
 % oxidizer
 
+%% PLOT
 
+time = [1:1:tb];
+
+%combustion chamber pressure
+figure()
+plot(time, Pc_vect,'c', 'LineWidth', 2.5)
+legend('Combustion chamber pressure', 'FontSize', 30)
+grid on; grid minor
+xlabel('Time [s]', 'FontSize', 30)
+ylabel('Pc [Pa]', 'FontSize', 30)
+
+%thrust
+figure()
+plot(time, T_vect,'m', 'LineWidth', 2.5)
+legend('Thrust', 'FontSize', 30)
+grid on; grid minor
+xlabel('Time [s]', 'FontSize', 30)
+ylabel('T [N]', 'FontSize', 30)
+
+%specific impulse
+g_0 = 9.81;
+m_dot_vect = m_dot_ox_vect + m_dot_f_vect;
+I_sp_vec = T_vect./ (m_dot_vect.* g_0);
+figure()
+plot(time, I_sp_vec, 'g', 'LineWidth', 2.5)
+legend('Specific impulse', 'FontSize', 30)
+grid on; grid minor
+xlabel('Time [s]', 'FontSize', 30)
+ylabel('$I_{sp} [s]$','FontSize', 30, 'Interpreter', 'latex')
+
+%m_dot
+% figure()
+% plot(time, m_dot_ox_vect, 'g', 'LineWidth', 2.5)
+% hold on 
+% plot(time,  m_dot_f_vect, 'k', 'LineWidth', 2.5)
+% legend('$\dot{m_{ox}}$', '$\dot{m_{f}}$', 'FontSize', 30)
+% grid on; grid minor
+% xlabel('$Time [s]$', 'FontSize', 30, 'Interpreter', 'latex')
+% ylabel('$\dot{m} [kg]$','FontSize', 30, 'Interpreter', 'latex')
+
+figure()
+plot(time, m_dot_ox_vect, 'g', 'LineWidth', 2.5)
+% legend('$\dot{m_{ox}}$', 'FontSize', 30)
+grid on; grid minor
+xlabel('$Time [s]$', 'FontSize', 30, 'Interpreter', 'latex')
+ylabel('$\dot{m_{ox}} [kg]$','FontSize', 30, 'Interpreter', 'latex')
+
+%m_fuel
+figure()
+plot(time,  m_dot_f_vect, 'g', 'LineWidth', 2.5)
+% legend('Fuel mass flow rate', 'FontSize', 30)
+grid on; grid minor
+xlabel('$Time [s]$', 'FontSize', 30)
+ylabel('$\dot{m_{f}} [kg]$','FontSize', 30, 'Interpreter', 'latex')
+
+%OF
+figure()
+plot(time,  OF_vect, 'g', 'LineWidth', 2.5)
+legend('$OF$', 'FontSize', 30, 'Interpreter', 'latex')
+grid on; grid minor
+xlabel('$Time [s]$', 'FontSize', 30)
+ylabel('$OF [-]$','FontSize', 30, 'Interpreter', 'latex')
+
+%Pressure tank ox and f
+% figure()
+% plot(time, P_tank_ox_vect, 'k', 'LineWidth', 2.5)
+% hold on
+% plot(time, P_tank_f_vect, 'c', 'LineWidth', 2.5)
+% legend('$P_{t,ox}$','$P_{t,f}$', 'FontSize', 30, 'Interpreter', 'latex')
+% grid on; grid minor
+% xlabel('$Time [s]$', 'FontSize', 30)
+% ylabel('$Pressure [Pa]$','FontSize', 30, 'Interpreter', 'latex')
