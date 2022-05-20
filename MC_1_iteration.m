@@ -96,16 +96,16 @@ colormap turbo
 %%
 
 % Maximum value
-thrust_max = max(max(max(T_array./1e3)))
+thrust_max = max(max(max(T_array)))
 
 % Minimum value 
-thrust_min = min(min(min(T_array./1e3)))
+thrust_min = min(min(min(T_array)))
 
 % Mean
-thrust_mean = mean(T_array./1e3,'all')
+thrust_mean = mean(T_array,'all')
 
 % Standard deviation
-thrust_std = std(T_array./1e3,0,'all')
+thrust_std = std(T_array,0,'all')
 
 
 
