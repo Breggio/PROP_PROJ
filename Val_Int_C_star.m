@@ -20,7 +20,7 @@ function [c_star] = Val_Int_C_star(p, P_c, OF)
 % VERSIONS
 %   2022-05-20: First version
 
-c_star = polyVal2D(p,P_c,OF);
+c_star = polyVal2D(p,P_c,OF,2,2);
 
 end
 

@@ -8,6 +8,7 @@ C_d = 0.65; % nominal discharge coefficient [-]
 %OF = 7.2; % nominal oxidizer to fuel ratio [-]
 rho_f = 810; % fuel density [kg/m^3]
 rho_ox = 1373; % oxidizer density [kg/m^3]
+A_e = 2.14179e-3; % nozzle exit area [m^2]
 
 %m_dot = 0.0327; % propellant mass flow rate [kg/s]
 %m_dot_ox = (OF/(1+OF))*m_dot; % nominal oxidizer mass flow rate [kg/s]
@@ -22,7 +23,7 @@ Standard_deviation_thrust = zeros(1, nb_iterations);
 Cumulative_standard_deviation_thrust = zeros(1, nb_iterations);
 
 %% 1) Parameters
-nb_samples = 5; % number of samples
+nb_samples = 20; % number of samples
 
 nom_d_inj_ox = 8.7116e-04; % nominal value of oxidizer injector diameter [m]
 nom_d_inj_f = 5.2389e-04; % nominal value of fuel injector diameter [m]
@@ -90,7 +91,7 @@ for i = 1:length(Triplets_shuffled)
         d_ox = triplet(1);
         d_f = triplet(2);
         a_th = triplet(3);
-        thrust = calculate_thrust(d_ox, d_f, a_th, P_c, C_d, rho_ox, rho_f);
+        thrust = calculate_thrust(d_ox, d_f, a_th, P_c, C_d, rho_ox, rho_f, A_e);
         Thrust(k) = thrust;
         k = k+1;
     end

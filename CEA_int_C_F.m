@@ -41,7 +41,6 @@ P_c = repmat(Pc_vect, nb_inputs); % c.c. pressure [bar]
 T = zeros(nb_inputs, nb_inputs); % matrix of temperatures [K]
 M_mol = zeros(nb_inputs, nb_inputs); % matrix of molar masses [kg/kmol]
 C_p = zeros(nb_inputs, nb_inputs); % matrix of specific heat capacities [kJ/(kg.K)]
-C_star = zeros(nb_inputs, nb_inputs); % c* [m/s]
 C_F = zeros(nb_inputs, nb_inputs); % thrust coefficient [-]
 P_e = zeros(nb_inputs, nb_inputs); % exit pressure [bar]
 
@@ -62,19 +61,10 @@ Gamma = C_p./(C_p-R); % [-]
 %% C_star and C_F computation
 eps = A_e/A_t;
 
-for i = 1:size(C_star, 1)
-    for j = 1:size(C_star, 2)
-        %C_star
-        t = T(i,j);
-        m_mol = M_mol(i,j)*10^(-3); % molar mass [kg/mol]
-        R_specific = R/m_mol;  % specific gas constant [J/(kg.K)]
-        gamma = Gamma(i,j);
-        c_star = sqrt(gamma*R_specific*t)*1/(gamma*sqrt((2/(gamma+1))^((gamma+1)/(gamma-1))));
-        display(c_star)
-        C_star(i,j) = c_star;
-
+for i = 1:size(C_F, 1)
+    for j = 1:size(C_F, 2)
         %C_F
-        k = gamma;
+        k = Gamma(i,j);
         Pe2Pc = P_e(i,j)/P_c(i,j);
         c_F = sqrt(2*(k^2/(k-1))*(2/(k+1))^((k+1)/(k-1)))*sqrt(1-(Pe2Pc)^((k-1)/k))+eps*Pe2Pc;
         C_F(i,j) = c_F;
