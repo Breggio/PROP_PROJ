@@ -135,16 +135,15 @@ for i = 2:dt:tb
     sum_m_f = dt*sum(m_dot_f_vect);
     sum_m_ox = dt*sum(m_dot_ox_vect);
 
-    guess_vec = [m_dot_ox, m_dot_f, Pc_in];
+    guess_vec = [m_dot_ox_vect(i-1), m_dot_f_vect(i-1), Pc_vect(i-1)];
 
-    fun = @(x) calculate_mdot(dt, V_gas_in_ox, V_gas_in_f, sum_m_f, sum_m_ox, A_t);
+    %fun = @(x) calculate_mdot(x, dt, V_gas_in_ox, V_gas_in_f, sum_m_f, sum_m_ox, A_t);
 
-    var = fsolve(fun, guess_vec, options);
+    var = fsolve(@(x) calculate_mdot(x, dt, V_gas_in_ox, V_gas_in_f, sum_m_f, sum_m_ox, A_t), guess_vec, options);
 
-
-    m_dot_vect(i) = m_dot_f_vect(i) + m_dot_ox_vect(i);
-
-    Pc_vect(i) = m_dot_vect(i)*c_star/A_t;
+    m_dot_ox_vect(i) = var(1);
+    m_dot_f_vect(i) = var(2);
+    Pc_vect(i) = var(3);
 
     P_tank_f_vect(i) = Pc_vect(i) + R_tot_f*m_dot_f_vect(i)^2;
     P_tank_ox_vect(i) = Pc_vect(i) + R_tot_ox*m_dot_ox_vect(i)^2;
@@ -152,53 +151,53 @@ for i = 2:dt:tb
 
 end
 
-ct_end = outputs.output.froz.cf_vac(3);
-T_end = A_t * Pc_vect(end) * ct_end
-T_1 = A_t * Pc_vect(1) * ct_end;
-T_2 = A_t * Pc_vect(2) * ct_end;
-
-%% LOSSES PLOTS
-
-subplot(2,3,1)
-plot(linspace(1,tb,length(m_dot_f_vect)),R_cooling_ox.*m_dot_ox_vect.^2)
-title('Cooling Losses')
-legend('OX')
-xlabel('Time [s]')
-ylabel('Pressure Losses [Pa]')
-subplot(2,3,2)
-plot(linspace(1,tb,length(m_dot_f_vect)),R_feed_f.*m_dot_f_vect.^2)
-hold on
-plot(linspace(1,tb,length(m_dot_f_vect)),R_feed_ox.*m_dot_ox_vect.^2)
-title('Feeding Losses')
-legend('FU','OX')
-xlabel('Time [s]')
-ylabel('Pressure Losses [Pa]')
-subplot(2,3,3)
-plot(linspace(1,tb,length(m_dot_f_vect)),R_dyn_f.*m_dot_f_vect.^2)
-hold on
-plot(linspace(1,tb,length(m_dot_f_vect)),R_dyn_ox.*m_dot_ox_vect.^2)
-title('Dynamic Losses')
-legend('FU','OX')
-xlabel('Time [s]')
-ylabel('Pressure Losses [Pa]')
-subplot(2,3,4)
-plot(linspace(1,tb,length(m_dot_f_vect)),R_inj_f.*m_dot_f_vect.^2)
-hold on
-plot(linspace(1,tb,length(m_dot_f_vect)),R_inj_ox.*m_dot_ox_vect.^2)
-title('Injection Losses')
-legend('FU','OX')
-xlabel('Time [s]')
-ylabel('Pressure Losses [Pa]')
-subplot(2,3,5)
-plot(linspace(1,tb,length(m_dot_f_vect)),R_valves_f.*m_dot_f_vect.^2)
-hold on
-plot(linspace(1,tb,length(m_dot_f_vect)),R_valves_ox.*m_dot_ox_vect.^2)
-title('Velves Losses')
-legend('FU','OX')
-xlabel('Time [s]')
-ylabel('Pressure Losses [Pa]')
-
-% it is clear how the losses which affect the fuel are lower because it's
-% mass flow rate is one order of magnitude lower than the one of the
-% oxidizer
-
+% ct_end = outputs.output.froz.cf_vac(3);
+% T_end = A_t * Pc_vect(end) * ct_end
+% T_1 = A_t * Pc_vect(1) * ct_end;
+% T_2 = A_t * Pc_vect(2) * ct_end;
+% 
+% %% LOSSES PLOTS
+% 
+% subplot(2,3,1)
+% plot(linspace(1,tb,length(m_dot_f_vect)),R_cooling_ox.*m_dot_ox_vect.^2)
+% title('Cooling Losses')
+% legend('OX')
+% xlabel('Time [s]')
+% ylabel('Pressure Losses [Pa]')
+% subplot(2,3,2)
+% plot(linspace(1,tb,length(m_dot_f_vect)),R_feed_f.*m_dot_f_vect.^2)
+% hold on
+% plot(linspace(1,tb,length(m_dot_f_vect)),R_feed_ox.*m_dot_ox_vect.^2)
+% title('Feeding Losses')
+% legend('FU','OX')
+% xlabel('Time [s]')
+% ylabel('Pressure Losses [Pa]')
+% subplot(2,3,3)
+% plot(linspace(1,tb,length(m_dot_f_vect)),R_dyn_f.*m_dot_f_vect.^2)
+% hold on
+% plot(linspace(1,tb,length(m_dot_f_vect)),R_dyn_ox.*m_dot_ox_vect.^2)
+% title('Dynamic Losses')
+% legend('FU','OX')
+% xlabel('Time [s]')
+% ylabel('Pressure Losses [Pa]')
+% subplot(2,3,4)
+% plot(linspace(1,tb,length(m_dot_f_vect)),R_inj_f.*m_dot_f_vect.^2)
+% hold on
+% plot(linspace(1,tb,length(m_dot_f_vect)),R_inj_ox.*m_dot_ox_vect.^2)
+% title('Injection Losses')
+% legend('FU','OX')
+% xlabel('Time [s]')
+% ylabel('Pressure Losses [Pa]')
+% subplot(2,3,5)
+% plot(linspace(1,tb,length(m_dot_f_vect)),R_valves_f.*m_dot_f_vect.^2)
+% hold on
+% plot(linspace(1,tb,length(m_dot_f_vect)),R_valves_ox.*m_dot_ox_vect.^2)
+% title('Velves Losses')
+% legend('FU','OX')
+% xlabel('Time [s]')
+% ylabel('Pressure Losses [Pa]')
+% 
+% % it is clear how the losses which affect the fuel are lower because it's
+% % mass flow rate is one order of magnitude lower than the one of the
+% % oxidizer
+% 

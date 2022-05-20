@@ -52,7 +52,7 @@ for i = 1 : nb_samples
             d_inj_ox = D_ox_vec(i);
             d_inj_f = D_f_vec(j);
             A_th = A_th_vec(k);
-            T = calculate_thrust(d_inj_ox, d_inj_f, A_th, P_c, OF, C_d, rho_ox, rho_f, m_dot_ox, m_dot_f);
+            T = calculate_thrust(d_inj_ox, d_inj_f, A_th, P_c, C_d, rho_ox, rho_f);
             T_array(i,j,k) = T;
         end
     end
