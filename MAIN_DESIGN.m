@@ -277,7 +277,7 @@ time = [1:1:tb];
 %combustion chamber pressure
 figure(1)
 plot(time, Pc_vect,'c', 'LineWidth', 2.5)
-legend('Combustion chamber pressure','Location','best','FontSize', 30)
+% legend('Combustion chamber pressure','Location','best','FontSize', 30)
 grid on; grid minor
 xlabel('Time [s]', 'FontSize', 30,'Interpreter','latex')
 ylabel('Pc [Pa]', 'FontSize', 30,'Interpreter','latex')
@@ -303,14 +303,12 @@ xlabel('Time [s]', 'FontSize', 30,'Interpreter','latex')
 ylabel('$I_{sp} [s]$','FontSize', 30, 'Interpreter', 'latex')
 
 %m_dot
-% figure()
-% plot(time, m_dot_ox_vect, 'g', 'LineWidth', 2.5)
-% hold on 
-% plot(time,  m_dot_f_vect, 'k', 'LineWidth', 2.5)
+figure()
+plot(time, m_dot_vect, 'g', 'LineWidth', 2.5)
 % legend('$\dot{m_{ox}}$', '$\dot{m_{f}}$', 'FontSize', 30)
-% grid on; grid minor
-% xlabel('$Time [s]$', 'FontSize', 30, 'Interpreter', 'latex')
-% ylabel('$\dot{m} [kg]$','FontSize', 30, 'Interpreter', 'latex')
+grid on; grid minor
+xlabel('$Time [s]$', 'FontSize', 30, 'Interpreter', 'latex')
+ylabel('$\dot{m} [kg/s]$','FontSize', 30, 'Interpreter', 'latex')
 
 figure(4)
 plot(time, m_dot_ox_vect, 'g', 'LineWidth', 2.5)
@@ -330,7 +328,7 @@ ylabel('$\dot{m_{f}} [kg]$','FontSize', 30, 'Interpreter', 'latex')
 %OF
 figure(6)
 plot(time,  OF_vect,'b', 'LineWidth', 2.5)
-legend('$OF$','Location','best','FontSize', 30, 'Interpreter', 'latex')
+% legend('$OF$','Location','best','FontSize', 30, 'Interpreter', 'latex')
 grid on; grid minor
 xlabel('$Time [s]$', 'FontSize',30,'Interpreter','latex')
 ylabel('$OF [-]$','FontSize', 30, 'Interpreter', 'latex')
