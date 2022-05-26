@@ -72,7 +72,6 @@ L_tot_nozzle = L_CON + L_DIV; % cm
 
 L_engine = L_cc + L_tot_nozzle;
 
-
 %% BLOW-DOWN DESIGN
 %% Tanks
 
@@ -274,9 +273,13 @@ ylabel('Pressure Losses [Pa]')
 
 time = [1:1:tb];
 
+set(0,'defaulttextInterpreter','latex'); 
+set(groot,'defaultAxesTickLabelInterpreter','latex'); 
+set(groot,'defaultLegendInterpreter','latex');
+
 %combustion chamber pressure
 figure()
-plot(time, Pc_vect,'c', 'LineWidth', 2.5)
+plot(time./100, Pc_vect,'r', 'LineWidth', 2.5)
 legend('Combustion chamber pressure', 'FontSize', 30)
 grid on; grid minor
 xlabel('Time [s]', 'FontSize', 30)
@@ -284,7 +287,7 @@ ylabel('Pc [Pa]', 'FontSize', 30)
 
 %thrust
 figure()
-plot(time, T_vect,'m', 'LineWidth', 2.5)
+plot(time./100, T_vect,'b', 'LineWidth', 2.5)
 legend('Thrust', 'FontSize', 30)
 grid on; grid minor
 xlabel('Time [s]', 'FontSize', 30)
@@ -295,11 +298,11 @@ g_0 = 9.81;
 m_dot_vect = m_dot_ox_vect + m_dot_f_vect;
 I_sp_vec = T_vect./ (m_dot_vect.* g_0);
 figure()
-plot(time(2:end), I_sp_vec(2:end), 'g', 'LineWidth', 2.5)
-legend('Specific impulse', 'FontSize', 30)
+plot(time(3:end)./100, I_sp_vec(3:end), 'c', 'LineWidth', 2.5)
+% legend('Specific impulse', 'FontSize', 30)
 grid on; grid minor
 xlabel('Time [s]', 'FontSize', 30)
-ylabel('$I_{sp} [s]$','FontSize', 30, 'Interpreter', 'latex')
+ylabel('$I_{sp} \ [s]$','FontSize', 30, 'Interpreter', 'latex')
 
 %m_dot
 % figure()
@@ -312,15 +315,15 @@ ylabel('$I_{sp} [s]$','FontSize', 30, 'Interpreter', 'latex')
 % ylabel('$\dot{m} [kg]$','FontSize', 30, 'Interpreter', 'latex')
 
 figure()
-plot(time, m_dot_ox_vect, 'g', 'LineWidth', 2.5)
+plot(time./100, m_dot_vect, 'g', 'LineWidth', 2.5)
 % legend('$\dot{m_{ox}}$', 'FontSize', 30)
 grid on; grid minor
-xlabel('$Time [s]$', 'FontSize', 30, 'Interpreter', 'latex')
-ylabel('$\dot{m_{ox}} [kg]$','FontSize', 30, 'Interpreter', 'latex')
+xlabel('Time [s]', 'FontSize', 30, 'Interpreter', 'latex')
+ylabel('$\dot{m} \ [kg]$','FontSize', 30, 'Interpreter', 'latex')
 
 %m_fuel
 figure()
-plot(time,  m_dot_f_vect, 'g', 'LineWidth', 2.5)
+plot(time./100,  m_dot_f_vect, 'g', 'LineWidth', 2.5)
 % legend('Fuel mass flow rate', 'FontSize', 30)
 grid on; grid minor
 xlabel('$Time [s]$', 'FontSize', 30)
@@ -328,11 +331,11 @@ ylabel('$\dot{m_{f}} [kg]$','FontSize', 30, 'Interpreter', 'latex')
 
 %OF
 figure()
-plot(time,  OF_vect, 'b', 'LineWidth', 2.5)
+plot(time./100,  OF_vect, 'y', 'LineWidth', 2.5)
 legend('$OF$', 'FontSize', 30, 'Interpreter', 'latex')
 grid on; grid minor
-xlabel('$Time [s]$', 'FontSize', 30)
-ylabel('$OF [-]$','FontSize', 30, 'Interpreter', 'latex')
+xlabel('Time [s]', 'FontSize', 30)
+ylabel('OF [-]','FontSize', 30, 'Interpreter', 'latex')
 
 %Pressure tank ox and f
 % figure()

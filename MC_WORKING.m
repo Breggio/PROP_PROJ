@@ -27,9 +27,11 @@ nb_samples = 5; % number of samples
 
 nom_d_inj_ox = 8.8721e-04; % nominal value of oxidizer injector diameter [m]
 nom_d_inj_f = 5.3355e-04; % nominal value of fuel injector diameter [m]
-tol_d_inj = 7.5e-05; % tolerance on injector diameter [m]
+tol_d_inj = 0;
+%7.5e-05; % tolerance on injector diameter [m]
 nom_A_th = 2.5884e-05; % nominal value of throat area [m^2]
-tol_A_th = (pi*(9E-5)^2)/4; % tolerance on throat area [m^2]
+tol_A_th = 0;
+%(pi*(9E-5)^2)/4; % tolerance on throat area [m^2]
 
 %% STARTING LOOP OF ITERATIONS
 for it = 1:nb_iterations
@@ -114,25 +116,33 @@ figure(1);
 
 % Plotting cumulative mean
 subplot(1,2,1);
-plot(Cumulative_mean_thrust, 'LineWidth', 1.5);
+plot(Cumulative_mean_thrust, 'b' ,'LineWidth', 2.5);
 hold on
 grid on
 xlabel('Monte Carlo iterations', 'Interpreter', 'latex');
 ylabel('Cumulative mean [N]', 'Interpreter', 'latex');
 title('\textbf{Cumulative mean of thurst}', 'Interpreter', 'latex');
+grid on
+grid minor
 
 % Plotting cumulative standard deviation
 subplot(1,2,2);
-plot(Cumulative_standard_deviation_thrust, 'LineWidth', 1.5);
+plot(Cumulative_standard_deviation_thrust, 'b' ,'LineWidth', 2.5);
 hold on
 grid on
 xlabel('Monte Carlo iterations', 'Interpreter', 'latex');
 ylabel('Cumulative standard deviation [N]', 'Interpreter', 'latex');
 title('\textbf{Cumulative standard deviation of thrust}', 'Interpreter', 'latex');
+grid on
+grid minor
 
-sgtitle('\textbf{Monte Carlo analysis}', 'Interpreter', 'latex');
+%sgtitle('\textbf{Monte Carlo analysis}', 'Interpreter', 'latex');
 
 %% 7) Determine the criterion for convergence of cumulative mean and std deviation (95% coverage interval)
+set(0,'defaulttextInterpreter','latex'); 
+set(groot,'defaultAxesTickLabelInterpreter','latex'); 
+set(groot,'defaultLegendInterpreter','latex');
+nb_iterations = 200;
 
 % Sort the Monte Carlo results from lowest value to the highest value
 Cumulative_mean_thrust_sorted = sort(Cumulative_mean_thrust);
@@ -176,7 +186,7 @@ Int_sd_sup = mean_sd + U_sd_plus;
 
 % Adding the convergence intervals to the plots
 subplot(1,2,1);
-yline([Int_cm_inf Int_cm_sup], '--', {'Lower bound','Upper bound'}, 'LineWidth', 1, 'color', '#D95319');
+yline([Int_cm_inf Int_cm_sup], '--', {'Lower bound','Upper bound'}, 'LineWidth', 2, 'color', 'r', 'Interpreter', 'latex');
 
 subplot(1,2,2);
-yline([Int_sd_inf Int_sd_sup], '--', {'Lower bound','Upper bound'}, 'LineWidth', 1, 'color', '#D95319');
+yline([Int_sd_inf Int_sd_sup], '--', {'Lower bound','Upper bound'}, 'LineWidth', 2, 'color', 'r', 'Interpreter', 'latex');
