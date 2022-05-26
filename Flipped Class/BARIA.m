@@ -11,6 +11,11 @@ Ab = 2*S_A + S_B;
 P_in = ((Ab/At)*c_star*rho_p*a)^(1/(1-n));
 Rb = a*(P_in/1e5)^n;
 
+% LA MALA DICE DI UTILIZZARE QUESTA PER CALCOLARSI Rb E DI CALCOLARSI LA p
+% CHE SAREBBE UN VETTORE(?) DAL FITTING DEI DATI, MA NON HO CAPITO COME...
+% CERCA DI CAPIRE QUESTO, MAGARI ANCHE DA QUALCUN ALTRO CHE CONOSCI
+%[Rb, Peff, tburn1, tburn2] = calulate_Rb(p)
+
 for i=1:Time
 
 x_new = x_old - delta_t*Rb;
