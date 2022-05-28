@@ -172,6 +172,230 @@ delta_t = 0.001; % [sec]
 % Set the time vector
 Time = 80*60*1e3; % [sec]
 
-[tb_low, P_low] = BARIA(a, n, delta_t, At_low, c_star, rho_p, Time);
-[tb_mid, P_mid] = BARIA(a, n, delta_t, At_mid, c_star, rho_p, Time);
-[tb_high, P_high] = BARIA(a, n, delta_t, At_high, c_star, rho_p, Time);
+c_star_low = 1610.4;
+c_star_mid = 1616.6;
+c_star_high = 1622.8;
+
+[tb_low, P_low] = BARIA(a_test, n, delta_t, At_low, c_star_low, rho_p, Time);
+[tb_mid, P_mid] = BARIA(a_test, n, delta_t, At_mid, c_star_mid, rho_p, Time);
+[tb_high, P_high] = BARIA(a_test, n, delta_t, At_high, c_star_high, rho_p, Time);
+
+%% Monte Carlo
+
+nb_samples = 50;
+nb_iterations = 10;
+
+for it = 1:nb_iterations
+
+% 1) Define the population
+a_vec = random('norm',a,Inc_a,nb_samples,1);
+n_vec = random('norm',n,Inc_n,nb_samples,1);
+
+% 2) Forming the couples
+Couples = zeros(1, nb_samples*nb_samples);
+
+z = 1;
+for i = 1:nb_samples
+    for j = 1:nb_samples
+            Couples(z) = a_vec(i);
+            Couples(z+1) = n_vec(j);
+            z = z+2;
+    end
+end
+
+% 4) Shuffling couples
+nb_couples = length(Couples)/2;
+
+indexes_couples = (1:nb_couples); % creating a list with indexes of couples
+indexes_couples = indexes_couples(randperm(nb_couples));
+% randomly shuffle the indexes of the couples
+
+Couples_shuffled = zeros(1, length(Couples));
+
+for i = 1:nb_couples
+    couples_index = indexes_couples(i);
+    Couples_shuffled(2*i-1) = Couples(2*couples_index-1);
+    Couples_shuffled(2*i) = Couples(2*couples_index);
+end
+
+% 5) Run the simulation for each couple
+
+tb_low_vec = zeros(1, nb_samples*nb_samples);
+tb_mid_vec = zeros(1, nb_samples*nb_samples);
+tb_high_vec = zeros(1, nb_samples*nb_samples);
+
+k = 1;
+for i = 1:length(Couples_shuffled)
+    if mod(i,2) == 1 % selecting only odd indexes QUESTO NON SO CHE CAZZO FA
+        couple = Couples_shuffled(i:i+1);
+        a_mc = couple(1);
+        n_mc = couple(2);
+        [tb_low, P_low] = BARIA(a_mc, n_mc, delta_t, At_low, c_star_low, rho_p, Time);
+        [tb_mid, P_mid] = BARIA(a_mc, n_mc, delta_t, At_mid, c_star_mid, rho_p, Time);
+        [tb_high, P_high] = BARIA(a_mc, n_mc, delta_t, At_high, c_star_high, rho_p, Time);
+        tb_low_vec(k) = tb_low;
+        tb_mid_vec(k) = tb_mid;
+        tb_high_vec(k) = tb_high;
+        k = k+1;
+    end
+end
+
+mean_tb_low = mean(tb_low_vec);
+mean_tb_mid = mean(tb_mid_vec);
+mean_tb_high = mean(tb_high_vec);
+
+standard_deviation_tb_low = std(tb_low_vec);
+standard_deviation_tb_mid = std(tb_mid_vec);
+standard_deviation_tb_high = std(tb_high_vec);
+
+Mean_tb_low(it) = mean_tb_low;
+Mean_tb_mid(it) = mean_tb_mid;
+Mean_tb_high(it) = mean_tb_high;
+
+Standard_deviation_tb_low(it) = standard_deviation_tb_low;
+Standard_deviation_tb_mid(it) = standard_deviation_tb_mid;
+Standard_deviation_tb_high(it) = standard_deviation_tb_high;
+
+Cumulative_mean_tb_low(it) = mean(Mean_tb_low(1:it));
+Cumulative_mean_tb_mid(it) = mean(Mean_tb_mid(1:it));
+Cumulative_mean_tb_high(it) = mean(Mean_tb_high(1:it));
+
+Cumulative_standard_deviation_tb_low(it) = mean(Standard_deviation_tb_low(1:it));
+Cumulative_standard_deviation_tb_mid(it) = mean(Standard_deviation_tb_mid(1:it));
+Cumulative_standard_deviation_tb_high(it) = mean(Standard_deviation_tb_high(1:it));
+
+end
+
+% 6) Map the code convergence
+figure();
+
+% Plotting cumulative mean
+subplot(1,2,1);
+plot(Cumulative_mean_tb_low, 'LineWidth', 1.5);
+hold on
+plot(Cumulative_mean_tb_mid, 'LineWidth', 1.5);
+plot(Cumulative_mean_tb_high, 'LineWidth', 1.5);
+grid on
+xlabel('Monte Carlo iterations', 'Interpreter', 'latex');
+ylabel('Cumulative mean [s]', 'Interpreter', 'latex');
+title('\textbf{Cumulative mean of burning time}', 'Interpreter', 'latex');
+legend('Low P', 'Mid P', 'High P')
+
+% Plotting cumulative standard deviation
+subplot(1,2,2);
+plot(Cumulative_standard_deviation_tb_low, 'LineWidth', 1.5);
+hold on
+plot(Cumulative_standard_deviation_tb_mid, 'LineWidth', 1.5);
+plot(Cumulative_standard_deviation_tb_high, 'LineWidth', 1.5);
+grid on
+xlabel('Monte Carlo iterations', 'Interpreter', 'latex');
+ylabel('Cumulative standard deviation [s]', 'Interpreter', 'latex');
+title('\textbf{Cumulative standard deviation of burning time}', 'Interpreter', 'latex');
+legend('Low P', 'Mid P', 'High P')
+
+sgtitle('\textbf{Monte Carlo analysis}', 'Interpreter', 'latex');
+
+%% 7) Determine the criterion for convergence of cumulative mean and std deviation (95% coverage interval)
+
+% Sort the Monte Carlo results from lowest value to the highest value
+Cumulative_mean_tb_low_sorted = sort(Cumulative_mean_tb_low);
+Cumulative_mean_tb_mid_sorted = sort(Cumulative_mean_tb_mid);
+Cumulative_mean_tb_high_sorted = sort(Cumulative_mean_tb_high);
+
+Cumulative_standard_deviation_tb_low_sorted = sort(Cumulative_standard_deviation_tb_low);
+Cumulative_standard_deviation_tb_mid_sorted = sort(Cumulative_standard_deviation_tb_mid);
+Cumulative_standard_deviation_tb_high_sorted = sort(Cumulative_standard_deviation_tb_high);
+
+% For a 95% coverage interval
+if 0.025*nb_iterations == fix(0.025*nb_iterations) % if 0.025*nb_iterations is an integer
+    cm_low_low = Cumulative_mean_tb_low_sorted(0.025*nb_iterations);
+    cm_low_mid = Cumulative_mean_tb_mid_sorted(0.025*nb_iterations);
+    cm_low_high = Cumulative_mean_tb_high_sorted(0.025*nb_iterations);
+
+    sd_low_low = Cumulative_standard_deviation_tb_low_sorted(0.025*nb_iterations);
+    sd_low_mid = Cumulative_standard_deviation_tb_mid_sorted(0.025*nb_iterations);
+    sd_low_high = Cumulative_standard_deviation_tb_high_sorted(0.025*nb_iterations);
+else
+    index = fix(0.025*nb_iterations + 0.5);
+    cm_low_low = Cumulative_mean_tb_low_sorted(index);
+    cm_low_mid = Cumulative_mean_tb_mid_sorted(index);
+    cm_low_high = Cumulative_mean_tb_high_sorted(index);
+
+    sd_low_low = Cumulative_standard_deviation_tb_low_sorted(index);
+    sd_low_mid = Cumulative_standard_deviation_tb_mid_sorted(index);
+    sd_low_high = Cumulative_standard_deviation_tb_high_sorted(index);
+end
+
+if 0.975*nb_iterations == fix(0.975*nb_iterations)  % if 0.975*nb_iterations is an integer
+    cm_high_low = Cumulative_mean_tb_low_sorted(0.975*nb_iterations);
+    cm_high_mid = Cumulative_mean_tb_mid_sorted(0.975*nb_iterations);
+    cm_high_high = Cumulative_mean_tb_high_sorted(0.975*nb_iterations);
+
+    sd_high_low = Cumulative_standard_deviation_tb_low_sorted(0.975*nb_iterations);
+    sd_high_mid = Cumulative_standard_deviation_tb_mid_sorted(0.975*nb_iterations);
+    sd_high_high = Cumulative_standard_deviation_tb_high_sorted(0.975*nb_iterations);
+else
+    index = fix(0.975*nb_iterations + 0.5);
+    cm_high_low = Cumulative_mean_tb_low_sorted(index);
+    cm_high_mid = Cumulative_mean_tb_mid_sorted(index);
+    cm_high_high = Cumulative_mean_tb_high_sorted(index);
+
+    sd_high_low = Cumulative_standard_deviation_tb_low_sorted(index);
+    sd_high_mid = Cumulative_standard_deviation_tb_mid_sorted(index);
+    sd_high_high = Cumulative_standard_deviation_tb_high_sorted(index);
+end
+
+% For 95% expanded limit uncertainty
+mean_cm_low = mean(Cumulative_mean_tb_low_sorted);
+mean_cm_mid = mean(Cumulative_mean_tb_mid_sorted);
+mean_cm_high = mean(Cumulative_mean_tb_high_sorted);
+
+mean_sd_low = mean(Cumulative_standard_deviation_tb_low_sorted);
+mean_sd_mid = mean(Cumulative_standard_deviation_tb_mid_sorted);
+mean_sd_high = mean(Cumulative_standard_deviation_tb_high_sorted);
+
+U_cm_minus_low = mean_cm_low - cm_low_low;
+U_cm_minus_mid = mean_cm_mid - cm_low_mid;
+U_cm_minus_high = mean_cm_high - cm_low_high;
+
+U_cm_plus_low = cm_high_low - mean_cm_low;
+U_cm_plus_mid = cm_high_mid - mean_cm_mid;
+U_cm_plus_high = cm_high_high - mean_cm_high;
+
+U_sd_minus_low = mean_sd_low - sd_low_low;
+U_sd_minus_mid = mean_sd_mid - sd_low_mid;
+U_sd_minus_high = mean_sd_high - sd_low_high;
+
+U_sd_plus_low = sd_high_low - mean_sd_low;
+U_sd_plus_mid = sd_high_mid - mean_sd_mid;
+U_sd_plus_high = sd_high_high - mean_sd_high;
+
+% The interval that contains r_true at a 95% level of confidence is then
+Int_cm_inf_low = mean_cm_low - U_cm_minus_low;
+Int_cm_inf_mid = mean_cm_mid - U_cm_minus_mid;
+Int_cm_inf_high = mean_cm_high - U_cm_minus_high;
+
+Int_cm_sup_low = mean_cm_low + U_cm_plus_low;
+Int_cm_sup_mid = mean_cm_mid + U_cm_plus_mid;
+Int_cm_sup_high = mean_cm_high + U_cm_plus_high;
+
+Int_sd_inf_low = mean_sd_low - U_sd_minus_low;
+Int_sd_inf_mid = mean_sd_mid - U_sd_minus_mid;
+Int_sd_inf_high = mean_sd_high - U_sd_minus_high;
+
+Int_sd_sup_low = mean_sd_low + U_sd_plus_low;
+Int_sd_sup_mid = mean_sd_mid + U_sd_plus_mid;
+Int_sd_sup_high = mean_sd_high + U_sd_plus_high;
+
+% Adding the convergence intervals to the plots
+subplot(1,2,1);
+yline([Int_cm_inf_low Int_cm_sup_low], '--', {'Lower bound','Upper bound'}, 'LineWidth', 1, 'color', '#D95319');
+hold on
+yline([Int_cm_inf_mid Int_cm_sup_mid], '--', {'Lower bound','Upper bound'}, 'LineWidth', 1, 'color', '#D95319');
+yline([Int_cm_inf_high Int_cm_sup_high], '--', {'Lower bound','Upper bound'}, 'LineWidth', 1, 'color', '#D95319');
+
+subplot(1,2,2);
+yline([Int_sd_inf_low Int_sd_sup_low], '--', {'Lower bound','Upper bound'}, 'LineWidth', 1, 'color', '#D95319');
+hold on
+yline([Int_sd_inf_mid Int_sd_sup_mid], '--', {'Lower bound','Upper bound'}, 'LineWidth', 1, 'color', '#D95319');
+yline([Int_sd_inf_high Int_sd_sup_high], '--', {'Lower bound','Upper bound'}, 'LineWidth', 1, 'color', '#D95319');

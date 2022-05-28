@@ -1,4 +1,4 @@
-function [tb, P] = BARIA(a_Pa, n, delta_t, At, c_star, rho_p, Time)
+function [tb, P_B] = BARIA(a_Pa, n, delta_t, At, c_star, rho_p, Time)
 
 % Inputs 
 % a_Pa [mm/(s Pa^n)]
@@ -32,17 +32,18 @@ for i=1:Time
 
     Ab = 2*S_A + S_B;
     
-    P(i) = ( ((Ab/At)*c_star*rho_p*a)^(1/(1-n)) ); % [Pa]
+    P(i) = ( ((Ab/At)*c_star*rho_p*a_Pa)^(1/(1-n)) ); % [Pa]
     Rb = a_Pa*(P(i))^n;
     
     x_old = x_new; 
     y_old = y_new; 
     
     if x_new <= 0 || y_new <= 0
-    tb = i/1e3; % [ms]
+    tb = i; % [s]
+    disp('COGLIONE')
     break
     end
 
 end
-
+P_B = P*1e-5;
 end
