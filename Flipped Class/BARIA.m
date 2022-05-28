@@ -1,4 +1,4 @@
-function [tb, P] = BARIA(a, n, delta_t, At, c_star, rho_p, Time)
+function [tb, P] = BARIA(a_Pa, n, delta_t, At, c_star, rho_p, Time)
 
 x_old = 0.29/2; % [m]
 y_old = 0.03; % [m]
