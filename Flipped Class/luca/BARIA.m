@@ -1,41 +1,47 @@
-function [tb, P] = BARIA(a, n, delta_t, At, c_star, rho_p, Time)
+function [tb, P] = BARIA(a_Pa, n, delta_t, At, c_star, rho_p, Time)
 
-x_old = 0.29/2; % [m]
-y_old = 0.03; % [m]
+% Inputs 
+% a_Pa [mm/(s Pa^n)]
+% ...
+%
+% Outputs
+%
+% tb [ms]
+% P [Pa]
 
-S_A = (0.08)^2*pi - (0.08-y_old)^2*pi;
-S_B = (0.08-y_old)*2*pi*2*x_old;
+x_old = 290/2; % [mm]
+y_old = 30; % [mm]
+r_cc = 80; % [mm] c.c radius
 
-Ab = 2*S_A + S_B;
+S_A = r_cc^2*pi - (r_cc-y_old)^2*pi; % [mm^2]
+S_B = (r_cc-y_old)*2*pi*2*x_old; % [mm^2]
 
-P_in = ((Ab/At)*c_star*rho_p*a)^(1/(1-n));
-Rb = a*(P_in/1e5)^n;
+Ab = 2*S_A + S_B; % [mm^2]
 
-% LA MALA DICE DI UTILIZZARE QUESTA PER CALCOLARSI Rb E DI CALCOLARSI LA p
-% CHE SAREBBE UN VETTORE(?) DAL FITTING DEI DATI, MA NON HO CAPITO COME...
-% CERCA DI CAPIRE QUESTO, MAGARI ANCHE DA QUALCUN ALTRO CHE CONOSCI
-%[Rb, Peff, tburn1, tburn2] = calulate_Rb(p)
+P_in = ((Ab/At)*c_star*rho_p*a_Pa)^(1/(1-n)); % [Pa]
+Rb = a_Pa*(P_in/1e5)^n;
+
 
 for i=1:Time
 
-x_new = x_old - delta_t*Rb;
-y_new = y_old - delta_t*Rb;
+    x_new = x_old - delta_t*Rb;
+    y_new = y_old - delta_t*Rb;
 
-S_A = (0.08)^2*pi - (0.08-y_new)^2*pi;
-S_B = (0.08-y_new)*2*pi*2*x_new;
+    S_A = (r_cc)^2*pi - (r_cc-y_new)^2*pi;
+    S_B = (r_cc-y_new)*2*pi*2*x_new;
 
-Ab = 2*S_A + S_B;
-
-P(i) = ((Ab/At)*c_star*rho_p*a)^(1/(1-n));
-Rb = a*(P(i)/1e5)^n;
-
-x_old = x_new; 
-y_old = y_new; 
-
-if x_new <= 0 || y_new <= 0
-    tb = i/1e3;
+    Ab = 2*S_A + S_B;
+    
+    P(i) = ( ((Ab/At)*c_star*rho_p*a)^(1/(1-n)) ); % [Pa]
+    Rb = a_Pa*(P(i))^n;
+    
+    x_old = x_new; 
+    y_old = y_new; 
+    
+    if x_new <= 0 || y_new <= 0
+    tb = i/1e3; % [ms]
     break
-end
+    end
 
 end
 

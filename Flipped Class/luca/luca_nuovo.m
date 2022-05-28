@@ -121,14 +121,15 @@ At_mid = 25.25*1e-3; % [m]
 At_high = 21.81*1e-3; % [m]
 
 % Propellant density
-M_ox = 68; % [g]
-rho_ox = 1.95; % [g/cm^3]
-M_f = 18; % [g]
-rho_f = 2.7; % [g/cm^3]
-M_b = 14; % [g]
-rho_b = 0.92; % [g/cm^3]
-rho_p = (M_ox + M_f + M_b)/(M_ox/rho_ox + M_f/rho_f + M_b/rho_b); % [g/cm^3]
-rho_p = rho_p*1e3; % [kg/m^3]
+% ERANO SBAGLIATE LE UNITà DI MISURA. M_ox/f/b erano [kg] non [g]
+
+M_ox = 68; % [kg]
+rho_ox = 1950; % [g/cm^3]
+M_f = 18; % [kg]
+rho_f = 2700; % [g/cm^3]
+M_b = 14; % [kg]
+rho_b = 920; % [g/cm^3]
+rho_p = (M_ox + M_f + M_b)/(M_ox/rho_ox + M_f/rho_f + M_b/rho_b); % [kg/m^3]
 
 % Characteristic velocity (amount of mass exiting from a combustion chamber)
 
