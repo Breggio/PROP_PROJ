@@ -13,6 +13,16 @@ plow_1 = pbar2438(:,1);
 pmid_1 = pbar2438(1:4201,2);
 phigh_1 = pbar2438(1:3601,3);
 
+figure()
+plot([1:length(plow_1)]./1e3, plow_1, 'm', 'LineWidth', 2);
+hold on
+plot([1:length(pmid_1)]./1e3, pmid_1, 'b', 'LineWidth', 2);
+plot([1:length(phigh_1)]./1e3, phigh_1, 'c' , 'LineWidth', 2);
+grid on, grid minor;
+xlabel('Time [s]')
+ylabel('Pressure [bar]')
+legend('Low P', 'Mid P', 'High P');
+
 Rb = zeros(9,3);
 Peff = zeros(9,3);
 
@@ -64,7 +74,7 @@ plow_7 = pbar2444(:,1);
 phigh_7 = pbar2444(1:4601,2); % QUESTI DUE SONO INVERTITIIIIIIIIIIIIIIIIIIII
 pmid_7 = pbar2444(1:4201,3);
 
-pmid_7(10) = 5;
+%pmid_7(10) = 5;
 
 figure()
 plot([1:length(pmid_7)], pmid_7);
@@ -115,9 +125,9 @@ a_Pa = a/(1e5)^n; % [m/(s Pa^n)]
 [a_test, Inc_a, n_test, Inc_n, R2] = Uncertainty(Peff_vec, Rb_vec);
 
 % Throat area of the engines
-At_low = 28.8*1e-3; % [m]
-At_mid = 25.25*1e-3; % [m]
-At_high = 21.81*1e-3; % [m]
+At_low = ((28.8*1e-3) / 2)^2*pi; % [m^2]
+At_mid = ((25.25*1e-3) / 2)^2*pi; % [m^2]
+At_high = ((21.81*1e-3) / 2)^2*pi; % [m^2]
 
 % Propellant density
 M_ox = 68; % [g]
@@ -132,37 +142,14 @@ rho_p = rho_p*1e3; % [kg/m^3]
 % Characteristic velocity (amount of mass exiting from a combustion chamber)
 
 % Ideal
-MM = 25.574; % [g/mol]
-Cp = 2.0456*MM; % [KJ/(kg*K)]
+MM = [25.574, 25.663, 25.758]; % [g/mol]
+Cp = [2.0456, 2.0486, 2.0519].*MM; % [KJ/(kg*K)]
 R = 8.314472; % [KJ/(mol*K)]
-gamma = Cp/(Cp-R);
-m_mol = MM*10^(-3);
-R_specific = R/m_mol;
+gamma = Cp./(Cp-R);
+m_mol = MM.*10.^(-3);
+R_specific = R./m_mol;
 T = 3333.74; % [K]
-c_star = sqrt(gamma*R_specific*T)*1/(gamma*sqrt((2/(gamma+1))^((gamma+1)/(gamma-1))));
-
-% % Real
-% V_p = pi*((0.08)^2-(0.05)^2)*0.29; % [m^3]
-% Mtot = rho_p*V_p; % [kg]
-% At_matrix = zeros(9,3);
-% At_matrix(1,1) = At_low;
-% At_matrix(:,2) = At_mid;
-% At_matrix(:,3) = At_high;
-% clear i
-% clear j
-% for i=1:9
-%     for j=1:3
-%         c_star_matrix(i,j) = Peff(i,j)*(tburn2(i,j) - tburn1(i,j))*1e5*At_matrix(i,j)/Mtot;
-%     end
-% end
-% c_star_low = mean(c_star_matrix(:,1));
-% c_star_mid = mean(c_star_matrix(:,2));
-% c_star_high = mean(c_star_matrix(:,3));
-
-% Burning rate
-Rb_low = mean(Rb(:,1));
-Rb_mid = mean(Rb(:,2));
-Rb_high = mean(Rb(:,3));
+c_star_vec = sqrt(gamma.*R_specific.*T).*1./(gamma.*sqrt((2./(gamma+1)).^((gamma+1)./(gamma-1))));
 
 % Set the time step
 delta_t = 0.001; % [sec]
@@ -170,14 +157,14 @@ delta_t = 0.001; % [sec]
 % Set the time vector
 Time = 80*60*1e3; % [sec]
 
-[tb_low, P_low] = BARIA(a, n, delta_t, At_low, c_star, rho_p, Time);
-[tb_mid, P_mid] = BARIA(a, n, delta_t, At_mid, c_star, rho_p, Time);
-[tb_high, P_high] = BARIA(a, n, delta_t, At_high, c_star, rho_p, Time);
+[tb_low, P_low] = BARIA(a, n, delta_t, At_low, c_star_vec(1), rho_p, Time);
+[tb_mid, P_mid] = BARIA(a, n, delta_t, At_mid, c_star_vec(2), rho_p, Time);
+[tb_high, P_high] = BARIA(a, n, delta_t, At_high, c_star_vec(3), rho_p, Time);
 
 %% Monte Carlo
 
-nb_samples = 50;
-nb_iterations = 10;
+nb_samples = 25;
+nb_iterations = 500;
 
 for it = 1:nb_iterations
 
@@ -224,9 +211,9 @@ for i = 1:length(Couples_shuffled)
         couple = Couples_shuffled(i:i+1);
         a_mc = couple(1);
         n_mc = couple(2);
-        [tb_low, P_low] = BARIA(a_mc, n_mc, delta_t, At_low, c_star, rho_p, Time);
-        [tb_mid, P_mid] = BARIA(a_mc, n_mc, delta_t, At_mid, c_star, rho_p, Time);
-        [tb_high, P_high] = BARIA(a_mc, n_mc, delta_t, At_high, c_star, rho_p, Time);
+        [tb_low, P_low] = BARIA(a_mc, n_mc, delta_t, At_low, c_star_vec(1), rho_p, Time);
+        [tb_mid, P_mid] = BARIA(a_mc, n_mc, delta_t, At_mid, c_star_vec(2), rho_p, Time);
+        [tb_high, P_high] = BARIA(a_mc, n_mc, delta_t, At_high, c_star_vec(3), rho_p, Time);
         tb_low_vec(k) = tb_low;
         tb_mid_vec(k) = tb_mid;
         tb_high_vec(k) = tb_high;
@@ -261,33 +248,31 @@ Cumulative_standard_deviation_tb_high(it) = mean(Standard_deviation_tb_high(1:it
 end
 
 % 6) Map the code convergence
-figure();
 
 % Plotting cumulative mean
-subplot(1,2,1);
-plot(Cumulative_mean_tb_low, 'LineWidth', 1.5);
+figure(1);
+plot(Cumulative_mean_tb_low,'m' ,'LineWidth', 2);
 hold on
-plot(Cumulative_mean_tb_mid, 'LineWidth', 1.5);
-plot(Cumulative_mean_tb_high, 'LineWidth', 1.5);
-grid on
+plot(Cumulative_mean_tb_mid,'b', 'LineWidth', 2);
+plot(Cumulative_mean_tb_high,'c', 'LineWidth', 2);
+grid on; grid minor;
 xlabel('Monte Carlo iterations', 'Interpreter', 'latex');
 ylabel('Cumulative mean [s]', 'Interpreter', 'latex');
-title('\textbf{Cumulative mean of burning time}', 'Interpreter', 'latex');
+%title('\textbf{Cumulative mean of burning time}', 'Interpreter', 'latex');
 legend('Low P', 'Mid P', 'High P')
 
 % Plotting cumulative standard deviation
-subplot(1,2,2);
-plot(Cumulative_standard_deviation_tb_low, 'LineWidth', 1.5);
+figure(2);
+plot(Cumulative_standard_deviation_tb_low,'m' ,'LineWidth', 2);
 hold on
-plot(Cumulative_standard_deviation_tb_mid, 'LineWidth', 1.5);
-plot(Cumulative_standard_deviation_tb_high, 'LineWidth', 1.5);
-grid on
+plot(Cumulative_standard_deviation_tb_mid,'b' ,'LineWidth', 2);
+plot(Cumulative_standard_deviation_tb_high,'c' ,'LineWidth', 2);
+grid on; grid minor;
 xlabel('Monte Carlo iterations', 'Interpreter', 'latex');
 ylabel('Cumulative standard deviation [s]', 'Interpreter', 'latex');
-title('\textbf{Cumulative standard deviation of burning time}', 'Interpreter', 'latex');
-legend('Low P', 'Mid P', 'High P')
+%title('\textbf{Cumulative standard deviation of burning time}', 'Interpreter', 'latex');
 
-sgtitle('\textbf{Monte Carlo analysis}', 'Interpreter', 'latex');
+%sgtitle('\textbf{Monte Carlo analysis}', 'Interpreter', 'latex');
 
 %% 7) Determine the criterion for convergence of cumulative mean and std deviation (95% coverage interval)
 
@@ -381,15 +366,28 @@ Int_sd_sup_low = mean_sd_low + U_sd_plus_low;
 Int_sd_sup_mid = mean_sd_mid + U_sd_plus_mid;
 Int_sd_sup_high = mean_sd_high + U_sd_plus_high;
 
-% Adding the convergence intervals to the plots
-subplot(1,2,1);
-yline([Int_cm_inf_low Int_cm_sup_low], '--', {'Lower bound','Upper bound'}, 'LineWidth', 1, 'color', '#D95319');
-hold on
-yline([Int_cm_inf_mid Int_cm_sup_mid], '--', {'Lower bound','Upper bound'}, 'LineWidth', 1, 'color', '#D95319');
-yline([Int_cm_inf_high Int_cm_sup_high], '--', {'Lower bound','Upper bound'}, 'LineWidth', 1, 'color', '#D95319');
+% % Adding the convergence intervals to the plots
+% figure(1);
+% yline([Int_cm_inf_low Int_cm_sup_low], '--','LineWidth', 1.5);
+% hold on
+% yline([Int_cm_inf_mid Int_cm_sup_mid], '--', 'LineWidth', 1.5);
+% yline([Int_cm_inf_high Int_cm_sup_high], '--', 'LineWidth', 1.5);
+% grid on; grid minor;
+% legend('Low P', 'Mid P', 'High P','','','','','','');
 
-subplot(1,2,2);
-yline([Int_sd_inf_low Int_sd_sup_low], '--', {'Lower bound','Upper bound'}, 'LineWidth', 1, 'color', '#D95319');
+figure(2)
+yline([Int_sd_inf_low Int_sd_sup_low], '--','LineWidth', 1.5);
 hold on
-yline([Int_sd_inf_mid Int_sd_sup_mid], '--', {'Lower bound','Upper bound'}, 'LineWidth', 1, 'color', '#D95319');
-yline([Int_sd_inf_high Int_sd_sup_high], '--', {'Lower bound','Upper bound'}, 'LineWidth', 1, 'color', '#D95319');
+yline([Int_sd_inf_mid Int_sd_sup_mid], '--','LineWidth', 1.5);
+yline([Int_sd_inf_high Int_sd_sup_high], '--', 'LineWidth', 1.5);
+grid on; grid minor;
+legend('Low P', 'Mid P', 'High P','','','','','','');
+
+figure(3)
+plot(Cumulative_mean_tb_low,'m' ,'LineWidth', 2);
+hold on
+yline([Int_cm_inf_low Int_cm_sup_low], '--','LineWidth', 1.5);
+grid on; grid minor;
+xlabel('Monte Carlo iterations', 'Interpreter', 'latex');
+ylabel('Cumulative mean [s]', 'Interpreter', 'latex');
+%title('\textbf{Cumulative mean of burning time}', 'Interpreter', 'latex');
