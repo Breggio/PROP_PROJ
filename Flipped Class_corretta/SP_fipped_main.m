@@ -14,10 +14,10 @@ pmid_1 = pbar2438(1:4201,2);
 phigh_1 = pbar2438(1:3601,3);
 
 figure()
-plot([1:length(plow_1)]./1e3, plow_1, 'm', 'LineWidth', 2);
+plot([1:length(plow_1)]./1e3, plow_1, 'm', 'LineWidth', 2.5);
 hold on
-plot([1:length(pmid_1)]./1e3, pmid_1, 'b', 'LineWidth', 2);
-plot([1:length(phigh_1)]./1e3, phigh_1, 'c' , 'LineWidth', 2);
+plot([1:length(pmid_1)]./1e3, pmid_1, 'b', 'LineWidth', 2.5);
+plot([1:length(phigh_1)]./1e3, phigh_1, 'c' , 'LineWidth', 2.5);
 grid on, grid minor;
 xlabel('Time [s]')
 ylabel('Pressure [bar]')
@@ -74,7 +74,7 @@ plow_7 = pbar2444(:,1);
 phigh_7 = pbar2444(1:4601,2); % QUESTI DUE SONO INVERTITIIIIIIIIIIIIIIIIIIII
 pmid_7 = pbar2444(1:4201,3);
 
-%pmid_7(10) = 5;
+pmid_7(10) = 5;
 
 figure()
 plot([1:length(pmid_7)], pmid_7);
@@ -108,7 +108,7 @@ Rb_line = polyval(c, log(Peff_vec));
 figure()
 for k=1:9
     for j=1:3
-        plot(log(Peff(k,j)), log(Rb(k,j)), 'o', 'MarkerFaceColor', 'm', 'MarkerEdgeColor', 'm');
+        plot(log(Peff(k,j)), log(Rb(k,j)), '*', 'LineWidth', 1,'MarkerSize',20, 'MarkerFaceColor', 'm', 'MarkerEdgeColor', 'm');
         hold on
     end
 end
@@ -251,10 +251,10 @@ end
 
 % Plotting cumulative mean
 figure(1);
-plot(Cumulative_mean_tb_low,'m' ,'LineWidth', 2);
+plot(Cumulative_mean_tb_low,'m' ,'LineWidth', 2.5);
 hold on
-plot(Cumulative_mean_tb_mid,'b', 'LineWidth', 2);
-plot(Cumulative_mean_tb_high,'c', 'LineWidth', 2);
+plot(Cumulative_mean_tb_mid,'b', 'LineWidth', 2.5);
+plot(Cumulative_mean_tb_high,'c', 'LineWidth', 2.5);
 grid on; grid minor;
 xlabel('Monte Carlo iterations', 'Interpreter', 'latex');
 ylabel('Cumulative mean [s]', 'Interpreter', 'latex');
@@ -263,10 +263,10 @@ legend('Low P', 'Mid P', 'High P')
 
 % Plotting cumulative standard deviation
 figure(2);
-plot(Cumulative_standard_deviation_tb_low,'m' ,'LineWidth', 2);
+plot(Cumulative_standard_deviation_tb_low,'m' ,'LineWidth', 2.5);
 hold on
-plot(Cumulative_standard_deviation_tb_mid,'b' ,'LineWidth', 2);
-plot(Cumulative_standard_deviation_tb_high,'c' ,'LineWidth', 2);
+plot(Cumulative_standard_deviation_tb_mid,'b' ,'LineWidth', 2.5);
+plot(Cumulative_standard_deviation_tb_high,'c' ,'LineWidth', 2.5);
 grid on; grid minor;
 xlabel('Monte Carlo iterations', 'Interpreter', 'latex');
 ylabel('Cumulative standard deviation [s]', 'Interpreter', 'latex');
@@ -384,10 +384,26 @@ grid on; grid minor;
 legend('Low P', 'Mid P', 'High P','','','','','','');
 
 figure(3)
-plot(Cumulative_mean_tb_low,'m' ,'LineWidth', 2);
+plot(Cumulative_mean_tb_low,'m' ,'LineWidth', 2.5);
 hold on
 yline([Int_cm_inf_low Int_cm_sup_low], '--','LineWidth', 1.5);
 grid on; grid minor;
 xlabel('Monte Carlo iterations', 'Interpreter', 'latex');
 ylabel('Cumulative mean [s]', 'Interpreter', 'latex');
 %title('\textbf{Cumulative mean of burning time}', 'Interpreter', 'latex');
+
+conv_mean_low = Cumulative_mean_tb_low(end)
+conv_mean_mid = Cumulative_mean_tb_mid(end)
+conv_mean_high = Cumulative_mean_tb_high(end)
+
+conv_std_low = Cumulative_standard_deviation_tb_low(end)
+conv_std_mid = Cumulative_standard_deviation_tb_mid(end)
+conv_std_high = Cumulative_standard_deviation_tb_high(end)
+
+%% Compute the relative uncertainties
+
+rel_inc_tb_low = Cumulative_standard_deviation_tb_low(end)/Cumulative_mean_tb_low(end);
+rel_inc_tb_mid = Cumulative_standard_deviation_tb_mid(end)/Cumulative_mean_tb_mid(end);
+rel_inc_tb_high = Cumulative_standard_deviation_tb_high(end)/Cumulative_mean_tb_high(end);
+rel_inc_a = Inc_a/a;
+rel_inc_n = Inc_n/n;

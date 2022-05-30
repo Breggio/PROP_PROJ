@@ -108,7 +108,7 @@ Rb_line = polyval(c, log(Peff_vec));
 figure()
 for k=1:9
     for j=1:3
-        plot(log(Peff(k,j)), log(Rb(k,j)), 'o', 'MarkerFaceColor', 'm', 'MarkerEdgeColor', 'm');
+        plot(log(Peff(k,j)), log(Rb(k,j)),'o','LineWidth',1,'MarkerSize', 10 , 'MarkerFaceColor', 'm', 'MarkerEdgeColor', 'm');
         hold on
     end
 end
@@ -251,10 +251,10 @@ end
 
 % Plotting cumulative mean
 figure(1);
-plot(Cumulative_mean_tb_low,'m' ,'LineWidth', 2);
+plot(Cumulative_mean_tb_low,'m' ,'LineWidth', 2.5);
 hold on
-plot(Cumulative_mean_tb_mid,'b', 'LineWidth', 2);
-plot(Cumulative_mean_tb_high,'c', 'LineWidth', 2);
+plot(Cumulative_mean_tb_mid,'b', 'LineWidth', 2.5);
+plot(Cumulative_mean_tb_high,'c', 'LineWidth', 2.5);
 grid on; grid minor;
 xlabel('Monte Carlo iterations', 'Interpreter', 'latex');
 ylabel('Cumulative mean [s]', 'Interpreter', 'latex');
@@ -263,10 +263,10 @@ legend('Low P', 'Mid P', 'High P')
 
 % Plotting cumulative standard deviation
 figure(2);
-plot(Cumulative_standard_deviation_tb_low,'m' ,'LineWidth', 2);
+plot(Cumulative_standard_deviation_tb_low,'m' ,'LineWidth', 2.5);
 hold on
-plot(Cumulative_standard_deviation_tb_mid,'b' ,'LineWidth', 2);
-plot(Cumulative_standard_deviation_tb_high,'c' ,'LineWidth', 2);
+plot(Cumulative_standard_deviation_tb_mid,'b' ,'LineWidth', 2.5);
+plot(Cumulative_standard_deviation_tb_high,'c' ,'LineWidth', 2.5);
 grid on; grid minor;
 xlabel('Monte Carlo iterations', 'Interpreter', 'latex');
 ylabel('Cumulative standard deviation [s]', 'Interpreter', 'latex');
@@ -384,10 +384,13 @@ grid on; grid minor;
 legend('Low P', 'Mid P', 'High P','','','','','','');
 
 figure(3)
-plot(Cumulative_mean_tb_low,'m' ,'LineWidth', 2);
+plot(Cumulative_mean_tb_low,'m' ,'LineWidth', 2.5);
 hold on
 yline([Int_cm_inf_low Int_cm_sup_low], '--','LineWidth', 1.5);
 grid on; grid minor;
 xlabel('Monte Carlo iterations', 'Interpreter', 'latex');
 ylabel('Cumulative mean [s]', 'Interpreter', 'latex');
 %title('\textbf{Cumulative mean of burning time}', 'Interpreter', 'latex');
+
+%% Calculate relative uncertainties
+
